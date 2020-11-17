@@ -18,4 +18,8 @@ export default new Vuetify({
       }
     }
   },
+<<<<<<< HEAD
 })
+=======
+})
+>>>>>>> 3ae5e2e (feat: home)
