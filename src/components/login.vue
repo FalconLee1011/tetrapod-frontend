@@ -24,7 +24,7 @@
           <v-container>
             <v-row>
               <v-col 
-                cols="8"
+                cols="12"
               >
                 <v-text-field
                   label="帳號"
