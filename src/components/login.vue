@@ -46,7 +46,7 @@
                   counter
                   @click:append="show1= !show1"
                 ></v-text-field>
-                <a>忘記密碼？</a>
+                <a class="grey--text">忘記密碼？</a>
               </v-col>
             </v-row>
           </v-container>
