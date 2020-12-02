@@ -5,6 +5,7 @@ import test from '../components/Test.vue'
 import signup from '../components/signup.vue'
 import login from '../components/login.vue'
 
+import product_page from '../components/product_page'
 Vue.use(VueRouter)
 
 const routes = [
@@ -23,6 +24,10 @@ const routes = [
   {
     path: "/login",
     component: login
+  },
+  {
+    path: "/product_page",
+    component: product_page
   }
 ]
 
