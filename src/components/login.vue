@@ -21,10 +21,13 @@
           <h2>登入</h2>
         </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container
+            style="max-width:75%"
+          >
             <v-row>
               <v-col 
                 cols="12"
+                
               >
                 <v-text-field
                   label="帳號"
