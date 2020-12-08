@@ -5,6 +5,8 @@ import test from '../components/Test.vue'
 import signup from '../components/signup.vue'
 import login from '../components/login.vue'
 import market from '../components/market.vue'
+import upload from '../components/upload_product.vue'
+
 import product_page from '../components/product_page'
 
 Vue.use(VueRouter)
@@ -33,6 +35,10 @@ const routes = [
   {
     path: "/market",
     component: market
+  }
+  ,{
+    path: "/upload",
+    component: upload
   }
 ]
 
