@@ -6,8 +6,8 @@ import signup from '../components/signup.vue'
 import login from '../components/login.vue'
 import market from '../components/market.vue'
 import upload from '../components/upload_product.vue'
-
 import product_page from '../components/product_page'
+import cart from '../components/cart.vue'
 
 Vue.use(VueRouter)
 
@@ -39,7 +39,11 @@ const routes = [
   ,{
     path: "/upload",
     component: upload
-  }
+  },
+  {
+    path: "/cart",
+    component: cart
+  },
 ]
 
 // eslint-disable-next-line no-new
