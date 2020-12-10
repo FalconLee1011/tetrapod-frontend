@@ -8,8 +8,12 @@
       <v-list-item-title>Merchant</v-list-item-title>
     </v-list-item-content>
 
-    <v-list-item-content>
+    <v-list-item-content v-if="(type == 'cart')">
       <v-list-item-title><countstepper></countstepper></v-list-item-title>
+    </v-list-item-content>
+
+    <v-list-item-content v-if="(type != 'cart')">
+      <v-list-item-title>{{ value }}</v-list-item-title>
     </v-list-item-content>
 
     <v-list-item-content>
@@ -26,12 +30,11 @@ import countstepper from "../misc/countstepper.vue"
       name: 'cart_bar',
       components: { countstepper, },
       props:{
-        merchant: {
-          img: String,
-          name: String,
-          howmany: Number,
-          cost: Number,
-        }
+        img: String,
+        name: String,
+        howmany: Number,
+        value: Number,
+        type: String,
       }
   }
 </script>
