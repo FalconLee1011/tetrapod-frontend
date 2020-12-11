@@ -89,7 +89,7 @@
         label="上傳商品圖片"
         filled
         hint="至少一頁"
-        #persistent-hint
+        persistent-hint
         append-icon=""
         @change="previewImage"
       >
@@ -127,7 +127,7 @@
   </v-card>
 </template>
 <script>
-  import 'viewerjs/dist/viewer.css'
+  // import 'viewerjs/dist/viewer.css'
   export default{
     data(){
       return{

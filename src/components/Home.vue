@@ -34,6 +34,9 @@ export default {
   created () {
     window.addEventListener('scroll', this.scrollWatcher);
   },
+  mounted() {
+    console.log(process.env.VUE_APP_API_PREFIX);
+  },
   destroyed () {
     window.removeEventListener('scroll', this.scrollWatcher);
   },

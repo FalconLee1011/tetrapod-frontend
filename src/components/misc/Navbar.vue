@@ -1,7 +1,20 @@
 <template>
   <v-app-bar>
+    <login 
+      :show=doingLogin
+      v-on:close="doingLogin = false"
+      v-on:register="doingSignup = true"
+    />
+    <signup 
+      :show=doingSignup
+      v-on:closes="doingSignup = false"
+    />
+
+
     <v-toolbar-title>
-      消波塊購物 <v-icon> mdi-vector-triangle </v-icon>
+      <div class="hover" @click="$router.push('/')">
+        消波塊購物 <v-icon> mdi-vector-triangle </v-icon>
+      </div>
     </v-toolbar-title>
     <v-spacer />
       <v-text-field
@@ -15,7 +28,15 @@
         @click:append="search"
       />
     <v-spacer />
-    <v-toolbar-items>
+    <v-toolbar-items v-if="authPassed">
+      <v-btn 
+        to="/logout"
+        icon
+        class="p-0" 
+        elevation=0
+      >
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
       <div
         v-for="(item, i) in navItems"
         :key="i"
@@ -25,30 +46,39 @@
         :items="item.items"
       />
     </v-toolbar-items>
+    <v-toolbar-items v-else>
+      <v-btn 
+        @click="doingLogin = true"
+        icon 
+        class="p-0" 
+        elevation=0
+      >
+        <v-icon>mdi-login</v-icon>
+      </v-btn>
+    </v-toolbar-items>
   </v-app-bar>
 </template>
 
 <script>
 import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
+import login from '../auth/login';
+import signup from '../auth/signup';
 
 export default {
-  components: {navBtn, navBtnMenu},
+  components: {navBtn, navBtnMenu, login, signup},
   data() {
     return {
+      doingLogin: false,
+      doingSignup: false,
+      authPassed: this.$store.getters.authPassed,
       searchbarHint: "搜尋...",
       keyword: "",
       navItems:[
-        {icon: "mdi-login", 
-         type: navBtn, 
-         items: [], 
-         link: ""
-        },
-
         {icon: "mdi-briefcase-upload-outline", 
          type: navBtnMenu, 
          items: [
-          {title: "上傳商品", link: ""},
+          {title: "上傳商品", link: "/upload"},
           {title: "管理商品", link: ""},
           {title: "賣場管理", link: ""},
           {title: "訂單管理", link: ""},
@@ -59,7 +89,7 @@ export default {
         {icon: "mdi-cart-variant", 
          type: navBtn, 
          items: [], 
-         link: ""
+         link: "/cart"
         },
         {icon: "mdi-bell-outline", 
          type: navBtnMenu, 
@@ -102,3 +132,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+  .hover:hover{
+    cursor: pointer;
+  }
+</style>
