@@ -7,6 +7,7 @@ import market from '../components/market.vue'
 import upload from '../components/upload_product.vue'
 import product_page from '../components/product_page'
 import cart from '../components/cart.vue'
+import product_manager from '../components/product_manager.vue'
 
 Vue.use(VueRouter)
 
@@ -42,6 +43,10 @@ const routes = [
   {
     path: "/cart",
     component: cart
+  },
+  {
+    path: "/product_manager",
+    component: product_manager
   },
 ]
 

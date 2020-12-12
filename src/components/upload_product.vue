@@ -127,7 +127,7 @@
   </v-card>
 </template>
 <script>
-  // import 'viewerjs/dist/viewer.css'
+  //import 'viewerjs/dist/viewer.css'
   export default{
     data(){
       return{
