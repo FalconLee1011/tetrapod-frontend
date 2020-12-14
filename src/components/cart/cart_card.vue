@@ -25,7 +25,7 @@
       <p
         v-for="item in items"
         :key="item">
-          <cartbar></cartbar>
+          <cartbar type="cart"></cartbar>
       </p>
       <div style="position:absolute;right:100px;font-weight:bold;">總金額<span style="font-size:200%;"> NT {{total}}</span></div>
     </v-card-text>

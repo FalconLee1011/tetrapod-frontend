@@ -7,12 +7,10 @@ import market from '../components/market.vue'
 import upload from '../components/upload_product.vue'
 import product_page from '../components/product_page'
 import cart from '../components/cart.vue'
-<<<<<<< HEAD
 import product_manager from '../components/product_manager.vue'
-=======
 import orderTracking from '../components/tracking/order-tracking.vue';
 import orderTrackingItself from '../components/tracking/order-tracking-tracking.vue';
->>>>>>> ead9841... feat: order tracking
+import checkout from '../components/checkout.vue'
 
 Vue.use(VueRouter)
 
@@ -59,6 +57,10 @@ const routes = [
   {
     path: "/order-tracking/:id",
     component: orderTrackingItself
+  },
+  {
+    path: "/checkout",
+    component: checkout
   },
 ]
 
