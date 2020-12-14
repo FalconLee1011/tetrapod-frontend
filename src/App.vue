@@ -7,6 +7,10 @@
   </v-app>
 </template>
 
+<style scoped>
+  @import './assets/css/swal-dark.min.css';
+</style>
+
 <script>
 import navbar from './components/misc/Navbar.vue'
 
