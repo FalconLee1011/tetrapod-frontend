@@ -17,9 +17,10 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: "/",
-    component: home
+    redirect: { name: 'home' }
   },
   {
+    name: "home",
     path: "/home",
     component: home
   },
@@ -47,7 +48,7 @@ const routes = [
     path: "/cart",
     component: cart
   },{
-    path: "/product_manager",
+    path: "/product-management",
     component: product_manager
   },
   {
@@ -74,17 +75,18 @@ const router = new VueRouter({
 // eslint-disable-next-line no-unused-vars
 router.beforeEach(async (to, from, next) => {
   // eslint-disable-next-line no-unused-vars
-  const authRequired = to.matched.some((route) => route.meta.authRequired) || false
+  const authRequired = to.matched.some((route) => route.meta.authRequired) || true
+  const redirectLocationWhenAuthFailed = to.matched.some((route) => route.meta.redirectLocationWhenAuthFailed) || undefined
 
   let user = window.localStorage.getItem('username');
   let token = window.localStorage.getItem('token');
   
-  // const res = await store.actions.auth();
-  const res = true;
+  const res = await store.dispatch("auth");
   
-  if (authRequired && !res) {
-    location.href = '/login';
-    return;
+  // if (authRequired && !res) { return; }
+  if (!res) { 
+    if(redirectLocationWhenAuthFailed != undefined && redirectLocationWhenAuthFailed != ""){ router.push(redirectLocationWhenAuthFailed) }
+    return next(); 
   }
   if(!store.getters.authPassed)
     store.commit('setToken', { id: token, username: user });

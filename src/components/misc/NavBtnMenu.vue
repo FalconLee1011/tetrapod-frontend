@@ -20,7 +20,7 @@
         :disabled="item.disabled || false"
         link
       >
-        <v-list-contant>{{ item.title }}</v-list-contant>
+        <v-list-item-content>{{ item.title }}</v-list-item-content>
       </v-list-item>
     </v-list>
   </v-menu>

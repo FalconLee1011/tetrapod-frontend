@@ -32,17 +32,17 @@ export default {
     }
   },
   created () {
-    window.addEventListener('scroll', this.scrollWatcher);
+    // window.addEventListener('scroll', this.scrollWatcher);
   },
   mounted() {
-    console.log(process.env.VUE_APP_API_PREFIX);
+    // console.log(process.env.VUE_APP_API_PREFIX);
   },
   destroyed () {
-    window.removeEventListener('scroll', this.scrollWatcher);
+    // window.removeEventListener('scroll', this.scrollWatcher);
   },
   methods: {
     scrollWatcher: function(){
-      console.log(window.scrollBy);
+      // console.log(window.scrollBy);
     },
   },
 }

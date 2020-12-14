@@ -30,7 +30,7 @@
     <v-spacer />
     <v-toolbar-items v-if="authPassed">
       <v-btn 
-        to="/logout"
+        @click="logout()"
         icon
         class="p-0" 
         elevation=0
@@ -65,13 +65,14 @@ import navBtnMenu from './NavBtnMenu.vue';
 import login from '../auth/login';
 import signup from '../auth/signup';
 
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+
 export default {
   components: {navBtn, navBtnMenu, login, signup},
   data() {
     return {
       doingLogin: false,
       doingSignup: false,
-      authPassed: this.$store.getters.authPassed,
       searchbarHint: "搜尋...",
       keyword: "",
       navItems:[
@@ -79,7 +80,7 @@ export default {
          type: navBtnMenu, 
          items: [
           {title: "上傳商品", link: "/upload"},
-          {title: "管理商品", link: ""},
+          {title: "管理商品", link: "/product-management"},
           {title: "賣場管理", link: ""},
           {title: "訂單管理", link: ""},
          ], 
@@ -103,20 +104,34 @@ export default {
          type: navBtnMenu, 
          items: [
           {title: "帳號管理", link: ""},
-          {title: "訂單查詢", link: ""},
+          {title: "訂單查詢", link: "/order-tracking"},
           {title: "敲", link: "", disabled: false},
          ],
          link: ""
         },
       ],
       hotKeyWords: [
-        "RTX 3090", "CybetPunk 2077", "浴室置物架", "室內拖鞋", "資工系工具人", "出租女友", "初音痛傘", "二手消波塊"
+        "RTX 3090", "CyberBUG 2077", "浴室置物架", "室內拖鞋", "資工系工具人", "出租女友", "初音痛傘", "二手消波塊"
       ],
     }
+  },
+  computed:{
+    authPassed(){ return this.$store.getters.authPassed; }
   },
   methods: {
     search: function(){
       console.log(`U searched ${this.keyword}`)
+    },
+    logout: function() {
+      this.$axios.post(`${API_PREFIX}/auth/logout`, {token: this.$store.getters.token})
+      this.$swal({
+        icon: 'info',
+        title: `See you :)`,
+        showConfirmButton: false,
+        timer: 1000,
+      });
+      this.$store.dispatch("deauth");
+      location.reload('/')
     },
     toggleSearchbarHint: function () {
       if(this.searchbarHint === "搜尋..."){

@@ -3,7 +3,6 @@
     :loading=false
     class="mx-auto mt-5"
     elevation="3"
-    :load="load"
   >
     <profileBanner 
       :title="title"

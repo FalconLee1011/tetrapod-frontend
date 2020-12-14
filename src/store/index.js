@@ -8,42 +8,46 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     token: undefined,
-    username: undefined,
+    account: undefined,
     authPassed: false,
   },
   getters:{
     token: (state) => state.token,
-    username: (state) => state.username,
+    account: (state) => state.account,
     authPassed: (state) => state.authPassed,
   },
   mutations: {
     setToken(state, arg){
-      console.log(arg.username);
+      console.log(arg.account);
       state.token = arg.id;
-      if(arg.username !== undefined) state.username = arg.username;
+      if(arg.account !== undefined) state.account = arg.account;
       window.localStorage.setItem('token', arg.id);
-      window.localStorage.setItem('username', arg.username);
+      window.localStorage.setItem('account', arg.account);
       state.authPassed = true;
+    },
+    // eslint-disable-next-line no-unused-vars
+    clearToken(state, arg){
+      window.localStorage.setItem('token', undefined);
+      window.localStorage.setItem('account', undefined);
     }
   },
   actions: {
     // eslint-disable-next-line no-unused-vars
-    settoken({commit, state}, arg){
-      console.log(arg.username);
-      commit('settoken', { id: arg.id, username: arg.username });
+    setToken({commit, state}, arg){
+      commit('setToken', { id: arg.id, account: arg.account });
     },
-    ///////////////////// IMPORTANT /////////////////////
-    // * FOLLOWING FUNCTION auth() IS UNTESTED AND UNDER DEVELOPMENT
-    // * RESERVED FOR FURTHER DEVELOPMENT
-    ///////////////////// IMPORTANT /////////////////////
+    // eslint-disable-next-line no-unused-vars
+    deauth({commit, state}, arg){
+      commit('clearToken');
+    },
     // eslint-disable-next-line no-unused-vars
     async auth({commit, state}){
-      let user = window.localStorage.getItem('username');
+      let user = window.localStorage.getItem('account');
       let token = window.localStorage.getItem('token');
-
+      
       let res = await Vue.axios.post(`${API_PREFIX}/auth/validate`, {token: token});
-      if(res.data) {
-        commit('settoken', { id: token, username: user });
+      if(res.data.result) {
+        commit('setToken', { id: token, account: user });
         return true;
       }
       return false;

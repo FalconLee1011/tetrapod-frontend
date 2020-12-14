@@ -8,10 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@sweetalert2/themes": "^4.0.1",
     "core-js": "^3.6.5",
+    "sweetalert2": "^10.12.5",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10",
+    "vue-sweetalert2": "^4.1.1",
+    "vue-toastification": "^1.7.8",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0"
   },
