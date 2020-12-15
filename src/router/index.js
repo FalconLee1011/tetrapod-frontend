@@ -11,6 +11,7 @@ import product_manager from '../components/product_manager.vue'
 import orderTracking from '../components/tracking/order-tracking.vue';
 import orderTrackingItself from '../components/tracking/order-tracking-tracking.vue';
 import checkout from '../components/checkout.vue'
+import profile from '../components/profile.vue'
 
 Vue.use(VueRouter)
 
@@ -62,6 +63,10 @@ const routes = [
   {
     path: "/checkout",
     component: checkout
+  },
+  {
+    path: "/profile",
+    component: profile
   },
 ]
 
