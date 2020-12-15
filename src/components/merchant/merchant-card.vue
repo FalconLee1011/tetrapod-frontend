@@ -9,12 +9,52 @@
       :uploader="uploader"
       type="merchantCard" 
     />
+    <div
+      class="white--text align-end hover"
+      v-if="imageNotUploaded || imageNotFound"
+      style="height: 15em; width:100%;"
+      @click="$router.push(`/merchant/${merchantID}`)"
+    >
+      <v-row
+        class="fill-height mt-0"
+        align="center"
+        justify="center"
+      >
+        <v-icon 
+          class="mx-auto"
+          style="vertical-align: middle !important;"
+          size="7rem"
+        >{{errorIcon}}</v-icon>
+      </v-row>
+      <v-row
+        align="center"
+        justify="center"
+        style="margin-top: -2.5rem"
+      >
+        {{errorMsg}}
+      </v-row>
+    </div>
     <v-img
       class="white--text align-end hover"
       height="15em"
-      :src="image"
+      :src="imageSrc"
+      v-if="imageSrc"
       @click="$router.push(`/merchant/${merchantID}`)"
-    />
+    >
+      <template v-slot:placeholder>
+        <v-row
+          class="fill-height ma-0"
+          align="center"
+          justify="center"
+        >
+          <v-progress-circular
+            indeterminate
+            color="primary"
+            v-if="!imageSrc"
+          ></v-progress-circular>
+        </v-row>
+      </template>
+    </v-img>
     <v-card-text @click="$router.push(`/merchant/${merchantID}`)" class="hover" >
       {{intro}}
     </v-card-text>
@@ -29,6 +69,9 @@
 
 <script>
 import profileBanner from "../profile/profileBanner.vue"
+import { mapActions } from 'vuex'
+// const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+
 export default {
   components: { profileBanner, },
   props:{
@@ -43,23 +86,53 @@ export default {
     type: {
       type: Number,
     },
-    image: {
-      type: String,
-      default: "https://www.screenja.com/static/img/thumbs/nyan-cat-1-normal-636.png"
+    image:{
+      default: []
     },
     intro:{
       type: String,
       default: "商品介紹..."
     },
-    price: {
-      type: Number,
-      default: 9876
+    price:{
+      type: String,
+      default: "9876"
     },
     merchantID: {
       type: String,
       default: "c8763c8763c8763c8763c8763"
     }
-  }
+  },
+  data() {
+    return {
+      imageSrc: undefined,
+      imageNotUploaded: false,
+      imageNotFound: false
+    }
+  },
+  computed: {
+    errorMsg(){
+      if(this.imageNotUploaded) return "賣家似乎沒有上傳圖片:p";
+      return "噢不！我們的伺服器上沒有這張照片:(";
+    },
+    errorIcon(){
+      if(this.imageNotUploaded) return "mdi-image-off-outline";
+      return "mdi-border-none-variant";
+    }
+  },
+  async mounted() {
+    await this.fetchImage();
+  },
+  methods: {
+    ...mapActions([
+      'generateBlob',
+    ]),
+    fetchImage: async function(){
+      if(this.image == null) { this.imageNotUploaded = true; return; }
+      const blob = await this.generateBlob(this.image[0]);
+      if(blob){ this.imageSrc = blob; }
+      else{ this.imageNotFound = true; }
+    }
+  },
 }
 </script>
 

@@ -81,8 +81,8 @@ export default {
          items: [
           {title: "上傳商品", link: "/upload"},
           {title: "管理商品", link: "/product-management"},
-          {title: "賣場管理", link: ""},
-          {title: "訂單管理", link: ""},
+          {title: "賣場管理", link: "/product-management"},
+          {title: "訂單管理", link: "/order-management"},
          ], 
          link: ""
         },
@@ -103,8 +103,9 @@ export default {
         {icon: "mdi-menu", 
          type: navBtnMenu, 
          items: [
-          {title: "帳號管理", link: ""},
+          {title: "帳號管理", link: "/profile"},
           {title: "訂單查詢", link: "/order-tracking"},
+          {title: "瀏覽紀錄", link: "/history"},
           {title: "敲", link: "", disabled: false},
          ],
          link: ""

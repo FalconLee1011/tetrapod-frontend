@@ -55,6 +55,26 @@ export default new Vuex.Store({
     testFunc({commit, state}){
       console.log(commit);
       console.log(state);
+    },
+    // eslint-disable-next-line no-unused-vars
+    async generateBlob({commit, state}, uuid) {
+      const uuidFetch = uuid.split('.');
+      try {
+        const res = await Vue.axios.post(
+          `${API_PREFIX}/media/get`,
+          {
+            'file': uuid
+          },
+          {
+            responseType: 'arraybuffer',
+          }
+        )
+        const blob = new Blob([res.data], { type: `image/${uuidFetch[uuidFetch.length - 1]}` })
+        return window.URL.createObjectURL(blob);
+      } catch (e) {
+        console.log(e);
+        return undefined;
+      }
     }
   },
   modules: {
