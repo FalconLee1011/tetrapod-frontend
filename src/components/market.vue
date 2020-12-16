@@ -66,7 +66,7 @@
 <script>
 import mCard from "./merchant/merchant-card.vue"
   export default {
-      name: 'cart_bar',
+      name: 'market',
       components: { mCard, },
       data:()=>({
         items:5,
