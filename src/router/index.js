@@ -13,6 +13,7 @@ import orderTrackingItself from '../components/tracking/order-tracking-tracking.
 import checkout from '../components/checkout.vue'
 import profile from '../components/profile.vue'
 import history from '../components/history.vue'
+import search from '../components/misc/search.vue'
 
 Vue.use(VueRouter)
 
@@ -73,6 +74,10 @@ const routes = [
     path: "/history",
     component: history
   },
+  {
+    path: "/search_bar",
+    component: search
+  }
 ]
 
 // eslint-disable-next-line no-new
