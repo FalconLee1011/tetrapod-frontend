@@ -3,19 +3,39 @@
     class="mx-auto mt-5"
     elevation="3"
     min-width="90%"
+    min-height="45vh"
     max-width="95%"
   >
+    <v-overlay
+      absolute
+      :value="isLoading"
+    >
+      <v-progress-circular
+        class="mx-10"
+        indeterminate
+        color="primary"
+        size="150"
+        width="5"
+      >讀取中...</v-progress-circular>
+    </v-overlay>
     <v-card-title>Home</v-card-title>
     <v-card-text>
       <v-row>
         <v-col
           cols="12"
           sm="3"
-          v-for="item in items"
-          :key="item"
+          v-for="(item, index) in items"
+          :key="index"
           max-width="20%"
         >
-          <mCard/>
+          <mCard
+            :title=item.merchant_name
+            :uploader=item.account
+            :image=item.photo
+            :intro=item.discription
+            :price=item.price
+            :merchantID=item._id
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -24,11 +44,14 @@
 
 <script>
 import mCard from "./merchant/merchant-card.vue"
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+
 export default {
   components: { mCard, },
   data() {
     return {
-      items: 3,
+      items: [],
+      isLoading: true,
     }
   },
   created () {
@@ -36,6 +59,7 @@ export default {
   },
   mounted() {
     // console.log(process.env.VUE_APP_API_PREFIX);
+    this.fetchData();
   },
   destroyed () {
     // window.removeEventListener('scroll', this.scrollWatcher);
@@ -44,6 +68,11 @@ export default {
     scrollWatcher: function(){
       // console.log(window.scrollBy);
     },
+    fetchData: async function () {
+      const res = await this.$axios.get(`${API_PREFIX}/merchant/getall`);
+      this.items = res.data.merchants;
+      this.isLoading = false;
+    }
   },
 }
 </script>

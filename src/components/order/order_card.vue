@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import cartbar from "./cart/cart_bar.vue"
+import cartbar from "../cart/cart_bar.vue"
   export default {
       name: 'order_card',
       components: { cartbar, },

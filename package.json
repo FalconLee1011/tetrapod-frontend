@@ -10,8 +10,11 @@
   "dependencies": {
     "@sweetalert2/themes": "^4.0.1",
     "core-js": "^3.6.5",
+    "filepond": "^4.25.1",
+    "filepond-plugin-image-preview": "^4.6.4",
     "sweetalert2": "^10.12.5",
     "vue": "^2.6.11",
+    "vue-filepond": "^6.0.3",
     "vue-router": "^3.2.0",
     "vue-socket.io": "^3.0.10",
     "vue-sweetalert2": "^4.1.1",

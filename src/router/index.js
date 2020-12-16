@@ -76,16 +76,12 @@ const routes = [
     component: history
   },
   {
-    path: "/search_bar",
+    path: "/searchbar",
     component: search
   },
   {
-    path: "/order_management",
+    path: "/order-management",
     component: order_management
-  },
-  {
-    path: "/order_card",
-    component: order_card
   },
 ]
 
