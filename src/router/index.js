@@ -14,6 +14,7 @@ import checkout from '../components/checkout.vue'
 import profile from '../components/profile.vue'
 import history from '../components/history.vue'
 import search from '../components/misc/search.vue'
+import order_management from '../components/Order_management.vue'
 
 Vue.use(VueRouter)
 
@@ -77,7 +78,15 @@ const routes = [
   {
     path: "/search_bar",
     component: search
-  }
+  },
+  {
+    path: "/order_management",
+    component: order_management
+  },
+  {
+    path: "/order_card",
+    component: order_card
+  },
 ]
 
 // eslint-disable-next-line no-new

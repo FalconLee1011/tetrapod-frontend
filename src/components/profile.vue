@@ -99,7 +99,6 @@
           color="error" 
           style="color: black;"
           light
-          @click="$emit('closes')"
         >
           取消
         </v-btn>
@@ -121,21 +120,23 @@ export default {
     show: Boolean,
   },
   name: "profile",
-  data: () => ({
-    edit:false,
-    date: null,
-    menu: false,
-    show1: false,
-    show2: false,
-    nickname:"消小塊",
-    firstname:"蕭",
-    secondname:"曉快",
-    email:"ntouyeah@mail.com",
-    phone_number:"0900000000",
-    gender:"女",
-    market_about:"這裡有很多消波塊",
-    btn1:"修改個人檔案",
-  }),
+  data(){
+    return {
+      edit:false,
+      date: null,
+      menu: false,
+      show1: false,
+      show2: false,
+      nickname:"消小塊",
+      firstname:"蕭",
+      secondname:"曉快",
+      email:"ntouyeah@mail.com",
+      phone_number:"0900000000",
+      gender:"女",
+      market_about:"這裡有很多消波塊",
+      btn1:"修改個人檔案",
+    }
+  },
   methods: {
     change: function () {
       this.edit=!this.edit
