@@ -32,8 +32,8 @@
     <v-card-actions>
       <v-spacer></v-spacer>
       <v-btn
-        text
-        color="deep-purple accent-4"
+        color="primary" 
+        style="color: black;"
       >
         結帳
       </v-btn>
