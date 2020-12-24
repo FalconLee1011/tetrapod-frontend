@@ -70,17 +70,21 @@
               <v-text-field
                 label="新密碼"
                 placeholder="請輸入您的新密碼"
+                :type="(show1) ? 'text' : 'password'"
                 v-model="password"
                 required
                 filled
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="show1 = !show1"
               />
               <v-text-field
                 label="確認新密碼"
                 placeholder="請再次輸入您的新密碼"
+                :type="(show1) ? 'text' : 'password'"
                 v-model="passwordCFN"
                 required
                 filled
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 @click:append="show1 = !show1"
               />
             </v-card-text>
@@ -110,14 +114,9 @@
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
-  props:{
-    show:{
-      type: Boolean,
-      default: false,
-    },
-  },
   data() {
     return {
+      show: false,
       step: 1,
       mail: undefined,
       verify: undefined,
@@ -127,6 +126,7 @@ export default {
       btnHint: "送出驗證碼", 
       errMsg: undefined,
       fireeeeeee: false,
+      show1: false,
     }
   },
   methods: {
@@ -144,7 +144,7 @@ export default {
       let res = undefined;
       try {
         res = await this.$axios.post(
-          `${API_PREFIX}/${API}`, 
+          `${API_PREFIX}${API}`, 
           data
         );
         console.log(res);
@@ -161,7 +161,7 @@ export default {
         case 1:
           this.isFetching = true;
           this.btnHint = "正在送出驗證碼...";
-          await this.fetch('request-token', {"email": this.mail});
+          await this.fetch('/auth/checkemail', {"email": this.mail});
           this.btnHint = "驗證";
           this.step += 1;
           this.isFetching = false;
@@ -169,7 +169,7 @@ export default {
         case 2:
           this.isFetching = true;
           this.btnHint = "驗證中...";
-          r2 = await this.fetch('validate-token', {"token": this.verify});
+          r2 = await this.fetch('/auth/check_verification_code', {"token": this.verify, "email": this.mail});
           if(!r2){
             this.fire("驗證碼錯誤！")
             this.isFetching = false;
@@ -181,7 +181,11 @@ export default {
           this.isFetching = false;
           break;
         case 3:
-          await this.fetch('set-new-pass', {"pass": this.password});
+          r2 = await this.fetch('/auth/resetpassword', {"password": this.password, "email": this.mail, "token": this.verify});
+          if(r2){
+            this.$swal( '密碼重設完成！' );
+            this.show = false;
+          }
           break;
         default:
           break;
@@ -195,8 +199,9 @@ export default {
       this.passwordCFN = undefined;
       this.isFetching = false;
       this.btnHint = "送出驗證碼";
-      this.$emit('closerst');
-    }
+      this.show = false;
+    },
+    interact(){ this.show = !this.show; }
   },
 }
 </script>

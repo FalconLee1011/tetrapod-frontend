@@ -3,13 +3,13 @@
     <v-overlay v-model="isLogging">
       <v-progress-circular indeterminate color="primary" ></v-progress-circular>
     </v-overlay>
-    <passRst v-on:closerst="resetPass = false" :show="resetPass" />
+    <passRst ref="passReset" v-on:closerst="resetPass = false" />
     <v-card>
       <v-card-title class="font-weight-bold justify-center">
         <v-spacer />
         <h2>登入</h2>
         <v-spacer />
-        <v-btn @click="$emit('close')" style="position: absolute; right: 10px;" icon>
+        <v-btn @click="interact" style="position: absolute; right: 10px;" icon>
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-card-title>
@@ -36,7 +36,7 @@
                 counter
                 @click:append="show1 = !show1"
               ></v-text-field>
-              <a @click="resetPass = true" class="grey--text">忘記密碼？</a>
+              <a @click="triggerDailogs('passReset')" class="grey--text">忘記密碼？</a>
             </v-col>
           </v-row>
         </v-container>
@@ -70,13 +70,10 @@ const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
   components:{ passRst },
-  props:{
-    show: Boolean
-  },
   data: () => ({
     account: "",
     isLogging: false,
-    show1: false,
+    show: false,
     resetPass: false,
     password: "",
     rules: {
@@ -107,7 +104,7 @@ export default {
           timer: 1500,
         });
         this.$store.dispatch("setToken", {id: res.data.token, account: res.data.account.account})
-        this.$emit('close')
+        this.show = false;
       } catch (_) {
         this.$swal({
           icon: 'error',
@@ -118,7 +115,9 @@ export default {
         console.log(_);
       }
       this.isLogging = false;
-    }
+    },
+    interact(){ this.show = !this.show; },
+    triggerDailogs(name) { this.$refs[name].interact(); },
   },
 };
 </script>

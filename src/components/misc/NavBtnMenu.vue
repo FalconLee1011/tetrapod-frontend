@@ -17,6 +17,7 @@
         v-for="(item, i) in items"
         :key="i"
         :to="item.link"
+        @click="notEmit(item.emitEvent)"
         :disabled="item.disabled || false"
         link
       >
@@ -32,6 +33,12 @@ export default {
   props: {
     icon: String,
     items: Array,
+  },
+  methods: {
+    notEmit(arg){
+      console.log(arg);
+      this.$emit(arg);
+    }
   },
 };
 </script>
