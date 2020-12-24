@@ -3,23 +3,18 @@
     v-model="dialog"
     max-width="800"
   >
-    <template v-slot:activator="{ on, attrs }">
-      <v-btn
-        color="red lighten-2"
-        dark
-        v-bind="attrs"
-        v-on="on"
-      >
-        Click Me
-      </v-btn>
-    </template>
     <v-card
       max-width="800"
       class="mx-auto pb-4 scroll_disable"
       elevation="0" 
     >
       <v-card-title class="justify-center">
+        <v-spacer />
         <h3 class="font-weight-medium">敲!</h3>
+        <v-spacer />
+        <v-btn @click="interact" style="position: absolute; right: 10px;" icon>
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card
         elevation="24" 
@@ -134,7 +129,7 @@
           })
         }
       },
-      
+      interact(){ this.dialog = !this.dialog; }
     },
     computed:{
       show_message(){

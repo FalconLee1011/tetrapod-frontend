@@ -1,16 +1,18 @@
 <template>
   <v-app-bar>
     <login 
+      ref="login"
       :show=doingLogin
-      v-on:close="doingLogin = false"
-      v-on:register="doingSignup = true"
+      v-on:register="triggerDailogs('register')"
     />
     <signup 
+      ref="register"
       :show=doingSignup
-      v-on:closes="doingSignup = false"
     />
-
-
+    <knock 
+      ref="knock"
+    />
+    
     <v-toolbar-title>
       <div class="hover" @click="$router.push('/')">
         消波塊購物 <v-icon> mdi-vector-triangle </v-icon>
@@ -44,11 +46,12 @@
         :icon="item.icon"
         :link="item.link"
         :items="item.items"
+        v-on:knock="triggerDailogs('knock')"
       />
     </v-toolbar-items>
     <v-toolbar-items v-else>
       <v-btn 
-        @click="doingLogin = true"
+        @click="triggerDailogs('login')"
         icon 
         class="p-0" 
         elevation=0
@@ -64,15 +67,17 @@ import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
 import login from '../auth/login';
 import signup from '../auth/signup';
+import knock from '../knock_talk/knock_talk.vue'
 
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
-  components: {navBtn, navBtnMenu, login, signup},
+  components: {navBtn, navBtnMenu, login, signup, knock},
   data() {
     return {
       doingLogin: false,
       doingSignup: false,
+      knocking: false,
       searchbarHint: "搜尋...",
       keyword: "",
       navItems:[
@@ -106,7 +111,7 @@ export default {
           {title: "帳號管理", link: "/profile"},
           {title: "訂單查詢", link: "/order-tracking"},
           {title: "瀏覽紀錄", link: "/history"},
-          {title: "敲", link: "", disabled: false},
+          {title: "敲", link: "", emitEvent: "knock" },
          ],
          link: ""
         },
@@ -117,12 +122,13 @@ export default {
     }
   },
   computed:{
-    authPassed(){ return this.$store.getters.authPassed; }
+    authPassed(){ return this.$store.getters.authPassed; },
   },
   methods: {
     search: function(){
       console.log(`U searched ${this.keyword}`)
     },
+    triggerDailogs: function (name) { this.$refs[name].interact(); },
     logout: function() {
       this.$axios.post(`${API_PREFIX}/auth/logout`, {token: this.$store.getters.token})
       this.$swal({

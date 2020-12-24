@@ -15,7 +15,6 @@ import profile from '../components/profile.vue'
 import history from '../components/history.vue'
 import search from '../components/misc/search.vue'
 import order_management from '../components/Order_management.vue'
-import knock_talk from '../components/knock_talk/knock_talk.vue'
 
 Vue.use(VueRouter)
 
@@ -84,10 +83,6 @@ const routes = [
     path: "/order-management",
     component: order_management
   },
-  {
-    path: "/knock",
-    component: knock_talk
-  }
 ]
 
 // eslint-disable-next-line no-new

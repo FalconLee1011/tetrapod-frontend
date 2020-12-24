@@ -85,7 +85,7 @@
           color="primary" 
           style="color: black;"
           light
-          @click="$emit('closes')"
+          @click="interact"
         >
           取消
         </v-btn>
@@ -93,7 +93,7 @@
           color="primary" 
           style="color: black;"
           light
-          @click="$emit('closes')"
+          @click="interact"
         > 
           註冊 
         </v-btn>
@@ -104,15 +104,16 @@
 
 <script>
 export default {
-  props: {
-    show: Boolean,
-  },
   name: "signup",
   data: () => ({
     date: null,
     menu: false,
+    show: false,
     show1: false,
     show2: false,
   }),
+  methods: {
+    interact(){ this.show = !this.show; }
+  },
 };
 </script>

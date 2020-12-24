@@ -376,7 +376,7 @@ export default {
       if (t >= 0) {
         this.times[3].time = Math.floor((t / 1000) % 60); //seconds
         this.times[2].time = Math.floor((t / 1000 / 60) % 60); //minutes
-        this.times[1].time = Math.floor((t / (1000 * 60 * 60)) % 24); //hours
+        this.times[1].time = Math.floor((t / (1000 * 60 * 60)) % 24) - 8; //hours
         this.times[0].time = Math.floor(t / (1000 * 60 * 60 * 24)); //days
       } else {
         this.times[3].time = this.times[2].time = this.times[1].time = this.times[0].time = 0;
