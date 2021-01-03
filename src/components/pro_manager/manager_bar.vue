@@ -79,7 +79,6 @@
           this.edit=true;
         else
           this.edit=false;
-
       }
     },
     watch:{

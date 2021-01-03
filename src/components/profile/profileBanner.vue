@@ -1,5 +1,5 @@
 <template>
-  <v-list-item>
+  <v-list-item @click="$router.push(`/market/${uploader}`)">
     <v-list-item-avatar color="primary" size="40">
       <img :src="avatar">
     </v-list-item-avatar>

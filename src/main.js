@@ -7,7 +7,7 @@ import router from './router'
 import axios from './plugins/axios'
 import sweetalert2 from './plugins/vue-sweetalert2.js'
 import toastification from './plugins/vue-toastification.js'
-import VueSocketIOExt from './plugins/VueSocketIOExt.js'
+import VueSocketIO from './plugins/VueSocketIOExt';
 
 Vue.config.productionTip = false
 
@@ -18,6 +18,6 @@ new Vue({
   axios,
   sweetalert2,
   toastification,
-  VueSocketIOExt,
+  VueSocketIO,
   render: h => h(App)
 }).$mount('#app')

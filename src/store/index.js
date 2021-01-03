@@ -24,6 +24,12 @@ export default new Vuex.Store({
       window.localStorage.setItem('token', arg.id);
       window.localStorage.setItem('account', arg.account);
       state.authPassed = true;
+      this._vm.$socket.client.emit(
+        'connect-init', 
+        {
+          token: state.token,
+        }
+      );
     },
     // eslint-disable-next-line no-unused-vars
     clearToken(state, arg){

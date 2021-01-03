@@ -12,22 +12,22 @@
         <v-container>
           <v-row>
             <v-col cols="6">
-              <v-text-field label="帳號" required></v-text-field>
+              <v-text-field v-model="form.account" label="帳號" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="暱稱" required></v-text-field>
+              <v-text-field v-model="form.nick_name" label="暱稱" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="姓氏" required></v-text-field>
+              <v-text-field v-model="form.last_name" label="姓氏" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="名字" required></v-text-field>
+              <v-text-field v-model="form.first_name" label="名字" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="Email" required></v-text-field>
+              <v-text-field v-model="form.email" label="Email" required></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="電話" required></v-text-field>
+              <v-text-field v-model="form.phone" label="電話" required></v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field
@@ -35,6 +35,7 @@
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show1 ? 'text' : 'password'"
                 required
+                v-model="form.password"
                 onCopy="return false"
                 @click:append="show1 = !show1"
               ></v-text-field>
@@ -59,7 +60,6 @@
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="date"
                     label="生日(選填)"
                     append-icon="mdi-calendar"
                     readonly
@@ -68,13 +68,13 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="date"
+                  v-model="form.birth_date"
                   @input="menu = false"
                 ></v-date-picker>
               </v-menu>
             </v-col>
             <v-col cols="6">
-              <v-select :items="['男', '女', '非二元', '秘密']" label="性別(選填)"></v-select>
+              <v-select v-model="form.sex" :items="['男', '女', '非二元', '秘密']" label="性別(選填)"></v-select>
             </v-col>
           </v-row>
         </v-container>
@@ -103,6 +103,8 @@
 </template>
 
 <script>
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+
 export default {
   name: "signup",
   data: () => ({
@@ -111,9 +113,50 @@ export default {
     show: false,
     show1: false,
     show2: false,
+    form:{
+      first_name: undefined,
+      last_name: undefined,
+      nick_name: undefined,
+      account: undefined,
+      email: undefined,
+      phone: undefined,
+      password: undefined,
+      birth_date: undefined,
+      sex: undefined,
+    }
   }),
   methods: {
-    interact(){ this.show = !this.show; }
+    interact(){ this.show = !this.show; },
+    async submit(){
+      try {
+        const res = await this.$axios.post(
+          `${API_PREFIX}/auth/register`,
+          this.form,
+        );
+        if(res.data.status == "ok"){
+          this.$swal({
+            icon: 'success',
+            title: `歡迎加入消波塊大家庭！`,
+            showConfirmButton: false,
+            timer: 1500,
+          }).then(() => {
+            this.interact()
+          });
+        }
+        else{
+          this.$swal({
+            icon: 'error',
+            title: `${res.data.status}`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        console.log(error.response);
+      }
+      // 
+    }
   },
 };
 </script>

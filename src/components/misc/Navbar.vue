@@ -1,18 +1,5 @@
 <template>
   <v-app-bar>
-    <login 
-      ref="login"
-      :show=doingLogin
-      v-on:register="triggerDailogs('register')"
-    />
-    <signup 
-      ref="register"
-      :show=doingSignup
-    />
-    <knock 
-      ref="knock"
-    />
-    
     <v-toolbar-title>
       <div class="hover" @click="$router.push('/')">
         消波塊購物 <v-icon> mdi-vector-triangle </v-icon>
@@ -65,19 +52,13 @@
 <script>
 import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
-import login from '../auth/login';
-import signup from '../auth/signup';
-import knock from '../knock_talk/knock_talk.vue'
 
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
-  components: {navBtn, navBtnMenu, login, signup, knock},
+  components: {navBtn, navBtnMenu },
   data() {
     return {
-      doingLogin: false,
-      doingSignup: false,
-      knocking: false,
       searchbarHint: "搜尋...",
       keyword: "",
       navItems:[
@@ -128,7 +109,7 @@ export default {
     search: function(){
       console.log(`U searched ${this.keyword}`)
     },
-    triggerDailogs: function (name) { this.$refs[name].interact(); },
+    triggerDailogs: function (name) { this.$emit("triggerDailogs", name); },
     logout: function() {
       this.$axios.post(`${API_PREFIX}/auth/logout`, {token: this.$store.getters.token})
       this.$swal({
