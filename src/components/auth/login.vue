@@ -74,6 +74,7 @@ export default {
     account: "",
     isLogging: false,
     show: false,
+    show1: false,
     resetPass: false,
     password: "",
     rules: {

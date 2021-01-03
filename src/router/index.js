@@ -41,7 +41,7 @@ const routes = [
     component: product_page
   },
   {
-    path: "/market",
+    path: "/market/:account",
     component: market
   }
   ,{

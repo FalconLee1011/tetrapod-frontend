@@ -20,24 +20,32 @@
     </v-overlay>
     <v-card-title>Home</v-card-title>
     <v-card-text>
-      <v-row>
-        <v-col
-          cols="12"
-          sm="3"
-          v-for="(item, index) in items"
-          :key="index"
-          max-width="20%"
-        >
-          <mCard
-            :title=item.merchant_name
-            :uploader=item.account
-            :image=item.photo
-            :intro=item.discription
-            :price=item.price
-            :merchantID=item._id
-          />
-        </v-col>
-      </v-row>
+      <v-lazy
+        :options="{
+          threshold: .5
+        }"
+        min-height="200"
+        transition="fade-transition"
+      >
+        <v-row>
+          <v-col
+            cols="12"
+            sm="3"
+            v-for="(item, index) in items"
+            :key="index"
+            max-width="20%"
+          >
+            <mCard
+              :title=item.merchant_name
+              :uploader=item.account
+              :image=item.photo
+              :intro=item.discription
+              :price=item.price
+              :merchantID=item._id
+            />
+          </v-col>
+        </v-row>
+      </v-lazy>
     </v-card-text>
   </v-card>
 </template>
