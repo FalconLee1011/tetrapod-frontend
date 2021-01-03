@@ -46,7 +46,7 @@
           light
           font-weight-bold
           class="font-weight-bold ml-3"
-          @click="del='true'"
+          @click="_delete()"
         >
         <v-icon left dense>
           mdi-delete
@@ -79,10 +79,10 @@
           this.edit=true;
         else
           this.edit=false;
+      },
+      _delete(){
+        this.$emit("return_delete")
       }
-    },
-    watch:{
-
     },
     props:{
       img: String,
