@@ -234,7 +234,10 @@
             light
             font-weight-bold
             class="font-weight-bold ml-2"
+            @click="putInCart"
+            :disabled="isAddingToCart"
           >
+            <v-progress-circular v-if="isAddingToCart" size="18" width="2" indeterminate color="primary" />
             放入購物車
           </v-btn>
         </v-card-actions>
@@ -306,6 +309,7 @@ export default {
     imageNotUploaded: false,
     imageNotFound: false,
     comments: [],
+    isAddingToCart: false,
     // comments: [
     //   {
     //     url:
@@ -337,6 +341,31 @@ export default {
         "generateBlob"
       ]
     ),
+    async putInCart(){
+      this.isAddingToCart = true;
+      const id = this.$route.params.id;
+      const res = await this.$axios.post(
+        `${API_PREFIX}/merchant/add_to_cart`,
+        {
+          merchant_id: id,
+        },
+        {
+          headers:{
+            token: this.$store.getters.token
+          }
+        }
+      );
+      console.log(res);
+      if(res.data.status == "added"){
+        this.isAddingToCart = false;
+        this.$toast.success(`已將 ${res.data.merchant.merchant_name} 加入您的購物車！`,
+          {
+            timeout: 2000,
+            position: 'top-right'
+          }
+        )
+      }
+    },
     formatPrice(value) {
       let val = (value / 1).toFixed(0);
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

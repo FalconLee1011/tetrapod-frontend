@@ -64,7 +64,7 @@ const routes = [
     component: orderTrackingItself
   },
   {
-    path: "/checkout",
+    path: "/checkout/:market",
     component: checkout
   },
   {

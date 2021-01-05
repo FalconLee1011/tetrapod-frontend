@@ -5,6 +5,10 @@
   >
     <v-card-title>
       訂單追蹤
+      <v-spacer v-if="(order.status[order.cState].status == 'canceled')" />
+      <span style="color: red;" v-if="(order.status[order.cState].status == 'canceled')">
+        訂單已取消
+      </span>
       <v-spacer />
       <v-btn @click="$router.push('/order-tracking')" outlined><v-icon small>mdi-undo-variant</v-icon>返回訂單列表</v-btn>
     </v-card-title>
@@ -12,24 +16,24 @@
       <v-row>
         <v-col cols=5>
           <v-card elevation=0>
-            <v-card-subtitle>與 {{seller}} 的訂單</v-card-subtitle>
+            <v-card-subtitle>與 {{this.order.market}} 的訂單</v-card-subtitle>
               <v-timeline>
                 <v-timeline-item 
-                  v-for="(state, idx) in timelineStatus"
+                  v-for="(state, idx) in order.status"
                   :key="idx"
                   large
                   style="margin: 1rem 0;"
-                  v-bind:class="((Object.keys(timelineStatus).indexOf(idx.toString()) + 1) % 2 == 0) ? ['text-right', 'align-right'] : ''"
-                  v-bind:color="(!state.status) ? 'grey darken-2' : (timelineStatus[idx + 1]) ? (timelineStatus[idx + 1].status) ? 'indigo darken-2' : 'primary' : 'primary'"
+                  v-bind:class="((Object.keys(order.status).indexOf(idx.toString()) + 1) % 2 == 0) ? ['text-right', 'align-right'] : ''"
+                  v-bind:color="(state.status == 'canceled') ? 'red darken-2' : (!state.is_done) ? 'grey darken-2' : (order.status[idx + 1]) ? (order.status[idx + 1].is_done) ? 'indigo darken-2' : 'primary' : 'primary'"
                 >
                   <div
-                    v-bind:class="(state.status) ? 'done' : 'not-done'"
+                    v-bind:class="(state.is_done) ? 'done' : 'not-done'"
                   >
                     <div>
-                      {{state.timestamp}}
+                      {{epochConverter(state.timestamp)}}
                     </div>
                     <div>
-                      {{state.statusName}}
+                      {{state.status}}
                     </div>
                   </div>
                 </v-timeline-item>
@@ -43,12 +47,12 @@
                 <v-card-subtitle>訂單內容</v-card-subtitle>
                 <v-data-table
                 :headers="headers"
-                :items="items"
+                :items="order.merchants"
                 > 
                   <template v-slot:item.price="{item}">
                     NT {{item.price.toLocaleString()}}
                   </template>
-                  <template v-slot:item.rating="{item}">
+                  <!-- <template v-slot:item.rating="{item}">
                     <v-rating
                       v-model="comments[items.indexOf(item)].rating"
                       :readonly="!orderIsDone"
@@ -59,7 +63,7 @@
                       half-icon="mdi-star-half-full"
                       half-increments
                     />
-                  </template>
+                  </template> -->
                 </v-data-table>
                 <v-card-actions>
                   <v-spacer />
@@ -72,7 +76,7 @@
             <v-col>
               <v-card elevation=0>
                 <v-card-title><v-spacer />
-                  <span style="font-size: 200%;">NT {{price.toLocaleString()}}</span>
+                  <span style="font-size: 200%;">NT {{order.price.toLocaleString()}}</span>
                 </v-card-title>
                 <v-card-actions>
                   <v-spacer />
@@ -98,16 +102,21 @@
 </style>
 
 <script>
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+
 export default {
-  props:{
-    seller:{
-      type: String,
-      default: "吉娃娃商店"
-    }
-  },
   data() {
     return {
       price: 9876,
+      order:{
+        approve: false,
+        buyer: "",
+        market: "",
+        merchants: [],
+        price: 0,
+        shipment_method: "",
+        status: [],
+      },
       orderIsDone: false,
       timelineStatus:[
         {statusName: "訂單送出", status: true, timestamp: "2020/10/21"},
@@ -118,8 +127,8 @@ export default {
         {statusName: "完成互相評價", status: false, timestamp: " "},
       ],
       headers:[
-        {text: "", value: "merchant"},
-        {text: "數量", value: "quantity"},
+        {text: "", value: "merchant_name"},
+        {text: "數量", value: "merchant_count"},
         {text: "金額", value: "price"},
         {text: "評價", value: "rating"},
       ],
@@ -142,6 +151,36 @@ export default {
     }
   },
   mounted() {
+    this.fetchOrder();
+  },
+  methods: {
+    async fetchOrder(){
+      const res = await this.$axios.post(
+        `${API_PREFIX}/merchant/order/get-orders/buyer`,
+        {
+          orderID: this.$route.params.id
+        },
+        {
+          headers: {
+            token: this.$store.getters.token
+          }
+        },
+      );
+      this.order = res.data.order[0];
+      console.log(this.order);
+    },
+    epochConverter(epoch) {
+      let date = new Date(0);
+      if(epoch <= 0) return "";
+      date.setUTCSeconds(epoch);
+      const year = date.getFullYear();
+      const month = ("0" + date.getMonth() + 1).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hours = ("0" + date.getHours()).slice(-2);
+      const minutes = ("0" + date.getMinutes()).slice(-2);
+      // const seconds = date.getSeconds();
+      return `${year}/${month}/${day} ${hours}:${minutes}`;
+    },
   },
   
 }

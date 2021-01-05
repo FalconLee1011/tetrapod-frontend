@@ -25,10 +25,7 @@
 <script>
 export default {
   name: "countstepper",
-  props: { howmany: Number },
-  data: () => ({
-    n: 1,
-  }),
+  props: { n: Number },
   methods: {
     add(){
       this.n += 1;

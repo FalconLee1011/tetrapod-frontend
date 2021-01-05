@@ -67,26 +67,30 @@
           </v-stepper-content>
           <v-stepper-content step="3">
             <v-card-text>
-              <v-text-field
-                label="新密碼"
-                placeholder="請輸入您的新密碼"
-                :type="(show1) ? 'text' : 'password'"
-                v-model="password"
-                required
-                filled
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="show1 = !show1"
-              />
-              <v-text-field
-                label="確認新密碼"
-                placeholder="請再次輸入您的新密碼"
-                :type="(show1) ? 'text' : 'password'"
-                v-model="passwordCFN"
-                required
-                filled
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                @click:append="show1 = !show1"
-              />
+              <v-form ref="newPassForm" lazy-validation @submit.prevent>
+                <v-text-field
+                  label="新密碼"
+                  placeholder="請輸入您的新密碼"
+                  :type="(show1) ? 'text' : 'password'"
+                  v-model="password"
+                  :rules="[v => v === this.passwordCFN || '請確認此兩欄位的密碼為一致']"
+                  required
+                  filled
+                  :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="show1 = !show1"
+                />
+                <v-text-field
+                  label="確認新密碼"
+                  placeholder="請再次輸入您的新密碼"
+                  :type="(show1) ? 'text' : 'password'"
+                  v-model="passwordCFN"
+                  :rules="[v => v === password || '請確認此兩欄位的密碼為一致']"
+                  required
+                  filled
+                  :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                  @click:append="show1 = !show1"
+                />
+              </v-form>
             </v-card-text>
           </v-stepper-content>
         </v-stepper-items>
@@ -148,7 +152,7 @@ export default {
           data
         );
         console.log(res);
-        if(res.data.status == "ok") return true;
+        if(res.data.status === "ok") return true;
         else return false;
       } catch (err) {
         console.log(err);
@@ -156,12 +160,22 @@ export default {
       }
     },
     async nextStep(){
-      let r2 = undefined;
+      let res = undefined;
       switch (this.step) {
         case 1:
           this.isFetching = true;
           this.btnHint = "正在送出驗證碼...";
-          await this.fetch('/auth/checkemail', {"email": this.mail});
+          res = await this.fetch('/auth/checkemail', {"email": this.mail});
+          if(!res){
+            this.$swal({
+              icon: 'error',
+              title: `帳號不存在 或 E-mail 格式錯誤`,
+              showConfirmButton: true,
+            });
+            this.btnHint = "送出驗證碼";
+            this.isFetching = false;
+            return
+          }
           this.btnHint = "驗證";
           this.step += 1;
           this.isFetching = false;
@@ -169,9 +183,13 @@ export default {
         case 2:
           this.isFetching = true;
           this.btnHint = "驗證中...";
-          r2 = await this.fetch('/auth/check_verification_code', {"token": this.verify, "email": this.mail});
-          if(!r2){
-            this.fire("驗證碼錯誤！")
+          res = await this.fetch('/auth/check_verification_code', {"token": this.verify, "email": this.mail});
+          if(!res){
+            this.$swal({
+              icon: 'error',
+              title: `驗證碼錯誤！`,
+              showConfirmButton: true,
+            });
             this.isFetching = false;
             this.btnHint = "驗證";
             return
@@ -181,8 +199,9 @@ export default {
           this.isFetching = false;
           break;
         case 3:
-          r2 = await this.fetch('/auth/resetpassword', {"password": this.password, "email": this.mail, "token": this.verify});
-          if(r2){
+          if(! this.$refs.newPassForm.validate()){ return } 
+          res = await this.fetch('/auth/resetpassword', {"password": this.password, "email": this.mail, "token": this.verify});
+          if(res){
             this.$swal( '密碼重設完成！' );
             this.show = false;
           }
