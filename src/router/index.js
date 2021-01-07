@@ -15,6 +15,7 @@ import profile from '../components/profile.vue'
 import history from '../components/history.vue'
 import search from '../components/misc/search.vue'
 import order_management from '../components/Order_management.vue'
+import home_search from '../components/home_search.vue'
 
 Vue.use(VueRouter)
 
@@ -106,6 +107,11 @@ const routes = [
     meta: {
       redirectLocationWhenAuthFailed: "/"
     }
+  },
+  {
+    name:"home_search",
+    path: "/home_search",
+    component: home_search
   },
 ]
 

@@ -16,6 +16,10 @@
         @mouseleave="toggleSearchbarHint"
         @click:append="search"
       />
+      <search_bar
+        class="mx-2"
+        @return_requirement="get_data"
+      />
     <v-spacer />
     <v-toolbar-items v-if="authPassed">
       <v-btn 
@@ -52,11 +56,12 @@
 <script>
 import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
+import search_bar from './search.vue';
 
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
-  components: {navBtn, navBtnMenu },
+  components: {navBtn, navBtnMenu ,search_bar},
   data() {
     return {
       searchbarHint: "搜尋...",
@@ -106,6 +111,15 @@ export default {
     authPassed(){ return this.$store.getters.authPassed; },
   },
   methods: {
+    get_data:function(requirement){
+      this.$router.push({
+        path:'/home_search',
+        query:{
+          data:requirement
+        },
+      })
+      //console.log(requirement)
+    },
     search: function(){
       console.log(`U searched ${this.keyword}`)
     },
