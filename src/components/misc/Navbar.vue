@@ -18,7 +18,7 @@
       />
       <search_bar
         class="mx-2"
-        @return_requirement="get_data"
+        v-on:return_requirement="advSearch($event)"
       />
     <v-spacer />
     <v-toolbar-items v-if="authPassed">
@@ -111,16 +111,18 @@ export default {
     authPassed(){ return this.$store.getters.authPassed; },
   },
   methods: {
-    get_data:function(requirement){
+    advSearch:function(requirement){
+      console.log(requirement)
       this.$router.push({
-        path:'/home_search',
+        path:'/search',
         query:{
           data:requirement
         },
-      })
+      }).catch(()=>{})
       //console.log(requirement)
     },
     search: function(){
+
       console.log(`U searched ${this.keyword}`)
     },
     triggerDailogs: function (name) { this.$emit("triggerDailogs", name); },

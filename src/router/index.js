@@ -109,8 +109,7 @@ const routes = [
     }
   },
   {
-    name:"home_search",
-    path: "/home_search",
+    path: "/search",
     component: home_search
   },
 ]

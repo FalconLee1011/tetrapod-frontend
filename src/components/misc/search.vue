@@ -137,32 +137,15 @@
     },
     methods:{
       return_requirement:function(){
-        this.price();
-        this.new_or_not();
-        this.bidding();
+        
         this.$emit("return_requirement",this.requirement);
         this.sheet = false;
+        console.log(this.requirement)
+        console.log("SS")
+        // if(this.$route.name != "home")
+        //   location.reload();
       },
-      new_or_not:function(){
-        if(this.requirement.all_new === this.requirement.old)
-          this.requirement.new_or_not = "";
-        else if(this.requirement.all_new === true)
-          this.requirement.new_or_not = "old";
-        else
-          this.requirement.new_or_not = "all_new";
-      },
-      price:function(){
-        this.requirement.low_price = parseInt(this.requirement.low_price)
-        this.requirement.high_price = parseInt(this.requirement.high_price)
-      },
-      bidding:function(){
-        if(this.requirement.bidding === this.requirement.general)
-          this.requirement.bidding = "";
-        else if(this.requirement.bidding === true)
-          this.requirement.bidding_or_not = false;
-        else
-          this.requirement.bidding_or_not = true;
-      }
+      
     }
   }
 </script>

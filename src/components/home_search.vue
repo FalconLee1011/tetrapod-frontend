@@ -6,6 +6,9 @@
     min-height="45vh"
     max-width="95%"
   >
+    <v-card-title primary-title>
+      title
+    </v-card-title>
     <v-overlay
       absolute
       :value="isLoading"
@@ -69,6 +72,8 @@ export default {
   },
   mounted() {
     // console.log(process.env.VUE_APP_API_PREFIX);
+    console.log('search mounted');
+    console.log(this.$route.query.data);
     this.fetchData();
   },
   destroyed () {
@@ -81,6 +86,11 @@ export default {
       console.log(this.requirement.new_or_not);
       console.log("bidding")
       console.log(this.requirement.bidding_or_not);
+      console.log(typeof this.requirement.low_price)
+      this.price();
+      this.new_or_not();
+      this.bidding();
+      
       //this.isLoading = true;
       let res = await this.$axios.post(
         `${API_PREFIX}/merchant/get`,
@@ -93,9 +103,36 @@ export default {
           },
         }
       );
+      console.log(res);
       this.items = res.data.merchants;
+      
       this.isLoading = false;
     },
+    new_or_not:function(){
+        if(this.requirement.all_new === this.requirement.old)
+          this.requirement.new_or_not = "";
+        else if(this.requirement.all_new === true)
+          this.requirement.new_or_not = "old";
+        else
+          this.requirement.new_or_not = "all_new";
+      },
+      price:function(){
+        if(this.requirement.high_price === null)
+          this.requirement.high_price = 9007199254740990;
+        if(this.requirement.low_price === null)
+          this.requirement.low_price = 0;
+        this.requirement.low_price = parseInt(this.requirement.low_price)
+        this.requirement.high_price = parseInt(this.requirement.high_price)
+        
+      },
+      bidding:function(){
+        if(this.requirement.bidding === this.requirement.general)
+          this.requirement.bidding = "";
+        else if(this.requirement.bidding === true)
+          this.requirement.bidding_or_not = false;
+        else
+          this.requirement.bidding_or_not = true;
+      }
   },
 }
 </script>
