@@ -3,7 +3,7 @@
     <v-toolbar v-if="debug">
       <v-toolbar-title>KNOCK DEBUG TOOLS</v-toolbar-title>
       <v-btn
-        @click="fetchChats" icon color="secondary"
+        @click="DEBUG_fetchChats" icon color="secondary"
       > <v-icon>mdi-refresh</v-icon> </v-btn>
       <v-btn
         @click="DEBUG_scrollToLastMsg" icon color="secondary"
@@ -33,7 +33,6 @@
             <v-tab 
               v-for="(knock, idx_tab) in knocks" 
               :key="`${idx_tab}_tab`"
-              @click="tabClicked"
             >
               {{ knock.to }}
             </v-tab>
@@ -110,17 +109,34 @@ export default {
     return {
       from_user: true,
       dialog: false,
-      debug: false,
+      debug: true,
       model: null,
       tab: null,
       knocks: {},
-      next_messagID: 4,
       input_message: "",
       knockLoading: true,
     };
   },
+  watch: {
+    dialog(){
+      // console.log("LOG FROM WATCH");
+      // console.log(this.knocks);
+      this.DEBUG_forceReload();
+    },
+  },
   methods: {
     // - DEBUG USAGE ONLAY BELOW - //
+    async DEBUG_fetchChats(){
+      await this.fetchChats();
+      let clone = {};
+      Object.assign(clone, this.knocks);
+      this.knocks = clone;
+    },
+    DEBUG_forceReload(){
+      let clone = {};
+      Object.assign(clone, this.knocks);
+      this.knocks = clone;
+    },
     DEBUG_scrollToLastMsg(){
       console.log(this.$refs.lastMsg);
       console.log(this.$refs);
@@ -145,7 +161,6 @@ export default {
           timestamp: 1610682218.9658182
         }
       );
-      console.log(this.knocks["5ff0d0be57359ff19999aeb0"]);
       // this.knocks = this.knocks
       let clone = {};
       Object.assign(clone, this.knocks);
@@ -155,13 +170,13 @@ export default {
     },
     tabClicked(){
       console.log("tabClicked");
-      this.scrollToLastMsg();
+      // this.scrollToLastMsg();
     },
     // - DEBUG USAGE ONLAY ABOVE - //
     async init() {
       await this.fetchChats();
-      console.log("----");
-      console.log(this.knocks);
+      // console.log("----");
+      // console.log(this.knocks);
       this.knockLoading = false;
       this.scrollToLastMsg();
     },
@@ -175,14 +190,14 @@ export default {
     add_message() {
       const roomID = Object.keys(this.knocks)[this.tab];
       const room = this.knocks[roomID];
-      console.log(room);
+      // console.log(room);
       const data = {
         token: this.$store.getters.token,
         roomID: roomID,
         message: this.input_message,
         receiver: room.to,
       };
-      console.log(data);
+      // console.log(data);
       this.$socket.client.emit("knock-send", data);
       // this.fetchMessage();
       // this.$vuetify.goTo(this.$refs.lastMsg[0], {
@@ -256,11 +271,10 @@ export default {
     },
     interact() {
       this.dialog = !this.dialog;
-      this.scrollToLastMsg();
     },
     async newMessage(msg) {
-      console.log(`NEW MESSAGE -> `);
-      console.log(msg);
+      // console.log(`NEW MESSAGE -> `);
+      // console.log(msg);
       // await this.fetchChats();
       this.knocks[msg.roomID].messages.push(msg);
       let clone = {};
@@ -269,7 +283,8 @@ export default {
       this.scrollToLastMsg();
     },
     async knockOn(user) {
-      console.log(`Opening chat on ${user}...`);
+      // console.log(`Opening chat on ${user}...`);
+      this.$emit('loading');
       const res = await this.$axios.post(
         `${API_PREFIX}/knock/createRoom`,
         {
@@ -281,7 +296,13 @@ export default {
           },
         }
       );
-      console.log(res.data);
+      this.interact();
+      this.$emit('doneloading');
+      if (res.data.status != "exist") {
+        this.DEBUG_fetchChats();
+        this.DEBUG_forceReload();
+      }
+      // console.log(res.data);
     },
   },
   computed: {
@@ -291,6 +312,13 @@ export default {
     //     else return false;
     //   });
     // },
+  },
+  updated() {
+    // console.log("UPDATE");
+    try {
+      this.scrollToLastMsg();
+      // document.querySelector(".v-tab--active").click();
+    } catch (e) {e}
   },
 };
 </script>

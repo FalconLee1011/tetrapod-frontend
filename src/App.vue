@@ -1,7 +1,17 @@
 <template>
   <v-app>
+    <v-overlay :value="isLoading">
+      <v-progress-circular
+        indeterminate
+        color="primary"
+      >
+      </v-progress-circular>
+      <span v-if="loadinghint">{{loadinghint}}</span>
+    </v-overlay>
     <knock 
       ref="knock"
+      v-on:loading="isLoading = true"
+      v-on:doneloading="isLoading = false"
     />
     <login 
       ref="login"
@@ -17,6 +27,8 @@
       />
       <router-view 
         v-on:openChat="openChat($event)"
+        v-on:loading="loadingHandler($event, true)"
+        v-on:doneloading="loadingHandler($event, false)"
       />
     </div>
   </v-app>
@@ -40,6 +52,8 @@ export default {
   data() {
     return {
       openChatOn: "",
+      isLoading: false,
+      loadinghint: undefined,
     }
   },
   mounted() {
@@ -54,12 +68,15 @@ export default {
   methods: {
     triggerDailogs: function (name) { this.$refs[name].interact(); },
     openChat(event){
-      this.$refs["knock"].interact();
       const openChatOn = event.to;
       console.log(openChatOn);
-      if(openChatOn){
-        this.$refs["knock"].knockOn(openChatOn);
-      }
+      if(openChatOn){ this.$refs["knock"].knockOn(openChatOn); }
+      else{ this.$refs["knock"].interact(); }
+    },
+    loadingHandler(event, toggle){
+      this.isLoading = toggle;
+      if(event != undefined) this.loadinghint = event.text || undefined;
+      else this.loadinghint = undefined;
     }
   },
   sockets: {

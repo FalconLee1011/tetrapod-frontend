@@ -61,7 +61,10 @@
     <v-card-actions>
       <v-btn color=secondary text elevation=0 >NT {{price.toLocaleString()}}</v-btn>
       <v-spacer />
-      <v-btn color=primary text elevation=0 >放入購物車</v-btn>
+      <v-btn @click="putInCart" color=primary text elevation=0 :disabled=isAddingToCart>
+        <v-progress-circular v-if="isAddingToCart" size="18" width="2" indeterminate color="primary" />
+        放入購物車
+      </v-btn>
       <v-btn @click="$router.push(`/merchant/${merchantID}`)" color=primary text elevation=0 >查看更多</v-btn>
     </v-card-actions>
   </v-card>
@@ -70,7 +73,7 @@
 <script>
 import profileBanner from "../profile/profileBanner.vue"
 import { mapActions } from 'vuex'
-// const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
   components: { profileBanner, },
@@ -106,7 +109,8 @@ export default {
     return {
       imageSrc: undefined,
       imageNotUploaded: false,
-      imageNotFound: false
+      imageNotFound: false,
+      isAddingToCart: false,
     }
   },
   computed: {
@@ -131,7 +135,31 @@ export default {
       const blob = await this.generateBlob(this.image[0]);
       if(blob){ this.imageSrc = blob; }
       else{ this.imageNotFound = true; }
-    }
+    },
+    async putInCart(){
+      this.isAddingToCart = true;
+      const res = await this.$axios.post(
+        `${API_PREFIX}/merchant/add_to_cart`,
+        {
+          merchant_id: this.merchantID,
+        },
+        {
+          headers:{
+            token: this.$store.getters.token
+          }
+        }
+      );
+      console.log(res);
+      if(res.data.status == "added"){
+        this.isAddingToCart = false;
+        this.$toast.success(`已將 ${res.data.merchant.merchant_name} 加入您的購物車！`,
+          {
+            timeout: 2000,
+            position: 'top-right'
+          }
+        )
+      }
+    },
   },
 }
 </script>
