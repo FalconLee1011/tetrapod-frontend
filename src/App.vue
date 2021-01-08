@@ -70,6 +70,20 @@ export default {
     openChat(event){
       const openChatOn = event.to;
       console.log(openChatOn);
+      if (openChatOn == this.$store.getters.account) {
+        this.$swal({
+          icon: "question",
+          title: "你真的有孤單到要跟自己聊天嗎OAO?",
+          showDenyButton: true,
+          confirmButtonText: "我好孤單。･ﾟ･(つд`ﾟ)･ﾟ･",
+          denyButtonText: '不，我朋友很多ヽ(∀ﾟ )人(ﾟ∀ﾟ)人( ﾟ∀)人(∀ﾟ )人',
+        }).then(async (res) => {
+            if(res.isConfirmed){ location.href = "https://wootalk.today/"; }
+          }
+        )
+        this.isLoading = false;
+        return
+      }
       if(openChatOn){ this.$refs["knock"].knockOn(openChatOn); }
       else{ this.$refs["knock"].interact(); }
     },

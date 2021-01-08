@@ -18,7 +18,7 @@
         :total=market.total
       />
     </v-card-text>
-    <v-card-text v-if="!marketItems[0]">
+    <v-card-text v-if="Object.keys(marketItems).length == 0">
       <v-row
         class="fill-height mt-0"
         align="center"

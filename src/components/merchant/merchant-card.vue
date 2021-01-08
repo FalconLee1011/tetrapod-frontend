@@ -131,7 +131,7 @@ export default {
       'generateBlob',
     ]),
     fetchImage: async function(){
-      if(this.image == null) { this.imageNotUploaded = true; return; }
+      if(this.image == null || this.image.length == 0) { this.imageNotUploaded = true; return; }
       const blob = await this.generateBlob(this.image[0]);
       if(blob){ this.imageSrc = blob; }
       else{ this.imageNotFound = true; }
