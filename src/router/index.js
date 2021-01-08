@@ -46,22 +46,37 @@ const routes = [
   }
   ,{
     path: "/upload",
-    component: upload
+    component: upload,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/cart",
-    component: cart
+    component: cart,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },{
     path: "/product-management",
-    component: product_manager
+    component: product_manager,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/order-tracking",
-    component: orderTracking
+    component: orderTracking,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/order-tracking/:id",
-    component: orderTrackingItself
+    component: orderTrackingItself,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/checkout/:market",
@@ -69,11 +84,17 @@ const routes = [
   },
   {
     path: "/profile",
-    component: profile
+    component: profile,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/history",
-    component: history
+    component: history,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
   {
     path: "/searchbar",
@@ -81,7 +102,10 @@ const routes = [
   },
   {
     path: "/order-management",
-    component: order_management
+    component: order_management,
+    meta: {
+      redirectLocationWhenAuthFailed: "/"
+    }
   },
 ]
 
