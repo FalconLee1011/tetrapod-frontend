@@ -18,7 +18,7 @@
         :total=market.total
       />
     </v-card-text>
-    <v-card-text v-else>
+    <v-card-text v-if="!marketItems[0]">
       <v-row
         class="fill-height mt-0"
         align="center"
@@ -100,7 +100,6 @@ export default {
       console.log("READY");
       this.ready = true;
       this.$emit('doneloading');
-      console.log(this.marketItems);
     },
     async fetchMarkets(markets){
       markets.forEach(async market => {
