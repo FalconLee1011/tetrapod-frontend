@@ -14,11 +14,7 @@
         ref="searchbar"
         @mouseover="toggleSearchbarHint"
         @mouseleave="toggleSearchbarHint"
-        @click:append="search"
-      />
-      <search_bar
-        class="mx-2"
-        v-on:return_requirement="advSearch($event)"
+        @click:append="$emit('search', keyword)"
       />
     <v-spacer />
     <v-toolbar-items v-if="authPassed">
@@ -105,26 +101,22 @@ export default {
       hotKeyWords: [
         "RTX 3090", "CyberBUG 2077", "浴室置物架", "室內拖鞋", "資工系工具人", "出租女友", "初音痛傘", "二手消波塊"
       ],
+      req: {
+        rating: undefined, 
+        isGeneral: undefined, 
+        isBidding: undefined, 
+        minPrice: undefined, 
+        maxPrice: undefined, 
+        isNew: undefined, 
+        old: undefined, 
+      }
     }
   },
   computed:{
     authPassed(){ return this.$store.getters.authPassed; },
   },
   methods: {
-    advSearch:function(requirement){
-      console.log(requirement)
-      this.$router.push({
-        path:'/search',
-        query:{
-          data:requirement
-        },
-      }).catch(()=>{})
-      //console.log(requirement)
-    },
-    search: function(){
-
-      console.log(`U searched ${this.keyword}`)
-    },
+    
     triggerDailogs: function (name) { this.$emit("triggerDailogs", name); },
     logout: function() {
       this.$axios.post(`${API_PREFIX}/auth/logout`, {token: this.$store.getters.token})

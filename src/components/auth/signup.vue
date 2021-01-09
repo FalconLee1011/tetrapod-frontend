@@ -93,7 +93,7 @@
           color="primary" 
           style="color: black;"
           light
-          @click="interact"
+          @click="submit"
         > 
           註冊 
         </v-btn>
@@ -136,7 +136,7 @@ export default {
         if(res.data.status == "ok"){
           this.$swal({
             icon: 'success',
-            title: `歡迎加入消波塊大家庭！`,
+            title: `${this.first_name}, 歡迎加入消波塊大家庭！`,
             showConfirmButton: false,
             timer: 1500,
           }).then(() => {

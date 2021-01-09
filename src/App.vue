@@ -24,11 +24,14 @@
       <navbar
         v-on:triggerDailogs="triggerDailogs($event)"
         v-on:openChat="openChat($event)"
+        v-on:search="search($event)"
       />
       <router-view 
+        ref="routerview"
         v-on:openChat="openChat($event)"
         v-on:loading="loadingHandler($event, true)"
         v-on:doneloading="loadingHandler($event, false)"
+        v-on:advSearch="advSearch($event)"
       />
     </div>
   </v-app>
@@ -45,6 +48,8 @@ import login from './components/auth/login';
 import signup from './components/auth/signup';
 
 // const API_PREFIX = process.env.VUE_APP_API_PREFIX;
+const advKeys = ["keyword", "rating", "isGeneral", "isBidding", "minPrice", "maxPrice", "isNew", "old"];
+
 
 export default {
   name: 'App',
@@ -66,6 +71,36 @@ export default {
     this.$socket.client.close();
   },
   methods: {
+    advSearch:function(reqs){
+      console.log(reqs);
+      let search = {}
+      for (const k in reqs) {
+        const v = reqs[k];
+        if(v) search[k] = v;
+      }
+      console.log(search);
+      const searchURL = new URLSearchParams( search )
+      history.pushState({}, null, `/search?${searchURL}`);
+      this.search();
+    },
+    search: function(keyword){
+      console.log(keyword);
+      let url = new URL(window.location.href);
+      let search = {}
+      for (const i in advKeys) {
+        const k = advKeys[i];
+        const cdt = url.searchParams.get(k);
+        if(cdt) search[k] = cdt;
+      }
+      if(keyword != search.keyword && (keyword))search.keyword = keyword
+      const searchURL = new URLSearchParams( search )
+
+      if(this.$router.currentRoute.path == '/search'){
+        history.pushState({}, null, `/search?${searchURL}`);
+        this.$refs.routerview.search()
+      }
+      else this.$router.push(`/search?${searchURL}`)
+    },
     triggerDailogs: function (name) { this.$refs[name].interact(); },
     openChat(event){
       const openChatOn = event.to;

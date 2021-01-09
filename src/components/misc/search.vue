@@ -1,12 +1,12 @@
 <template>
   <div class="text-center">
     <v-btn
-      color="grey darken-2"
       elevation="0"
-      dark
       @click="sheet = !sheet"
+      small
     >
-      進階搜索
+      <v-icon small>mdi-filter-menu-outline</v-icon>
+      進階搜尋
     </v-btn>
     <v-bottom-sheet v-model="sheet">
       <v-sheet
@@ -41,14 +41,14 @@
                   <v-checkbox
                     label="一般"
                     class="mt-0"
-                    v-model="requirement.general"
+                    v-model="requirement.isGeneral"
                   ></v-checkbox>
                 </v-col>
                 <v-col cols="6" class="pt-0">
                   <v-checkbox
                     label="競標"
                     class="mt-0"
-                    v-model="requirement.bidding"
+                    v-model="requirement.isBidding"
                   ></v-checkbox>
                 </v-col>
               </v-row>
@@ -59,7 +59,7 @@
                 <v-col cols="5" class="pt-0" >
                   <v-text-field 
                     outlined 
-                    v-model="requirement.low_price" 
+                    v-model="requirement.minPrice" 
                     class="mt-0" 
                     placeholder="最低價"></v-text-field>
                 </v-col>
@@ -69,7 +69,7 @@
                 <v-col cols="5" class="pt-0">
                   <v-text-field 
                     outlined 
-                    v-model="requirement.high_price" 
+                    v-model="requirement.maxPrice" 
                     class="mt-0" 
                     placeholder="最高價"></v-text-field>
                 </v-col>
@@ -81,7 +81,7 @@
                 <v-col cols="6" class="pt-0">
                   <v-checkbox
                     label="全新"
-                    v-model="requirement.all_new"
+                    v-model="requirement.isNew"
                     class="mt-0"
                   ></v-checkbox>
                 </v-col>
@@ -118,34 +118,31 @@
 
 <script>
   export default {
+    props:{
+      requirement:{
+        type: Object,
+        default: () => {
+          return {
+            rating: undefined, 
+            isGeneral: undefined, 
+            isBidding: undefined, 
+            minPrice: undefined, 
+            maxPrice: undefined, 
+            isNew: undefined, 
+            old: undefined, 
+          }
+        }
+      }
+    },
     data:()=>({
       sheet:false,
-      requirement:{
-        rating:0,
-        general:false,
-        bidding:false,
-        bidding_or_not:null,
-        low_price:null,
-        high_price:null,
-        all_new:false,
-        old:false,
-        new_or_not:null,
-      }
     }),
-    computed:{
- 
-    },
+    computed:{},
     methods:{
       return_requirement:function(){
-        
-        this.$emit("return_requirement",this.requirement);
+        this.$emit("setAdvReq",this.requirement);
         this.sheet = false;
-        console.log(this.requirement)
-        console.log("SS")
-        // if(this.$route.name != "home")
-        //   location.reload();
       },
-      
     }
   }
 </script>

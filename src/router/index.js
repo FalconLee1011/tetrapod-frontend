@@ -15,7 +15,7 @@ import profile from '../components/profile.vue'
 import history from '../components/history.vue'
 import search from '../components/misc/search.vue'
 import order_management from '../components/Order_management.vue'
-import home_search from '../components/home_search.vue'
+import search_result from '../components/search_result.vue'
 
 Vue.use(VueRouter)
 
@@ -110,7 +110,7 @@ const routes = [
   },
   {
     path: "/search",
-    component: home_search
+    component: search_result
   },
 ]
 
