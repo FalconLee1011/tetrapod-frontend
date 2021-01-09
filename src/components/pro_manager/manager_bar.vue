@@ -8,7 +8,7 @@
             </v-img>
           </v-col>
           <v-col cols="8" class="pl-0 body-1">
-            商品名稱
+            {{name}}
           </v-col>
         </v-row>
       </v-col>
@@ -67,7 +67,9 @@
     name: 'cart_bar',
     data:()=>({
       edit:false,
-      delete:false
+      delete:false,
+      // new_price:this.price,
+      // new_stock:this.stock
     }),
     methods:{
       formatPrice(value) {
@@ -77,12 +79,14 @@
       edit_status(){
         if(this.edit === false)
           this.edit=true;
-        else
+        else{
           this.edit=false;
+          this.$emit("return_edit",this.price,this.stock)
+        }
       },
       _delete(){
         this.$emit("return_delete")
-      }
+      },
     },
     props:{
       img: String,
