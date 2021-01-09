@@ -14,7 +14,7 @@
         ref="searchbar"
         @mouseover="toggleSearchbarHint"
         @mouseleave="toggleSearchbarHint"
-        @click:append="search"
+        @click:append="$emit('search', keyword)"
       />
     <v-spacer />
     <v-toolbar-items v-if="authPassed">
@@ -52,11 +52,12 @@
 <script>
 import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
+import search_bar from './search.vue';
 
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
-  components: {navBtn, navBtnMenu },
+  components: {navBtn, navBtnMenu ,search_bar},
   data() {
     return {
       searchbarHint: "搜尋...",
@@ -100,15 +101,22 @@ export default {
       hotKeyWords: [
         "RTX 3090", "CyberBUG 2077", "浴室置物架", "室內拖鞋", "資工系工具人", "出租女友", "初音痛傘", "二手消波塊"
       ],
+      req: {
+        rating: undefined, 
+        isGeneral: undefined, 
+        isBidding: undefined, 
+        minPrice: undefined, 
+        maxPrice: undefined, 
+        isNew: undefined, 
+        old: undefined, 
+      }
     }
   },
   computed:{
     authPassed(){ return this.$store.getters.authPassed; },
   },
   methods: {
-    search: function(){
-      console.log(`U searched ${this.keyword}`)
-    },
+    
     triggerDailogs: function (name) { this.$emit("triggerDailogs", name); },
     logout: function() {
       this.$axios.post(`${API_PREFIX}/auth/logout`, {token: this.$store.getters.token})
