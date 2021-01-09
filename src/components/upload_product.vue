@@ -261,7 +261,7 @@ export default{
       data.append('new_or_not', this.new_or_not);
       data.append('bidding_price_perbid', this.bidding_price_perbid);
       data.append('bidding_price', this.bidding_price);
-      data.append('bidding_endtime', ENDtime);
+      data.append('bidding_endtime', ENDtime.getTime() / 1000);
 
       try {
         const res = await this.$axios.post(

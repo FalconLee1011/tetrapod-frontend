@@ -35,18 +35,18 @@
         >
       </div>
       <v-btn
-        color="error"
+        :color="(btn1 == '聯絡買家') ? 'primary' : 'error'"
         style="color: black"
-        @click="$emit('remove', {idx: idx, id: id})"
+        @click="$emit('act1', {idx: idx, id: id, buyer: buyer})"
         v-if="btn2 != 'null'"
       >
-        取消訂單
+        {{ btn1 }}
       </v-btn>
       <v-btn 
         color="secondary" 
         style="color: black" 
         v-if="btn2 != 'null'"
-        @click="$emit('confirm', {idx: idx, id: id})"
+        @click="$emit('confirm', {idx: idx, id: id, buyer: buyer})"
       >
         {{ btn2 }}
       </v-btn>
@@ -86,6 +86,10 @@ export default {
     total: {
       type: Number,
       default: 6666,
+    },
+    btn1: {
+      type: String,
+      default: "取消訂單",
     },
     btn2: {
       type: String,

@@ -464,8 +464,19 @@ export default {
       this.timeinterval = setInterval(this.updateTimer, 1000);
     },
     async init(){
+      this._tk();
       await this.fetchMerchant(this.$route.params.id);
       await this.fetchPhotos(this.photo);
+    }, 
+    _tk(){
+      this.$axios.get(
+        `${API_PREFIX}/tracking/browsing-history/push?merchantid=${this.$route.params.id}`,
+        {
+          headers:{
+            token: this.$store.getters.token
+          }
+        }
+      );
     }
   },
   async mounted() {

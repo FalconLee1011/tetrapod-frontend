@@ -16,7 +16,7 @@
           :id="order._id"
           :total="order.price"
           :items="order.merchants"
-          v-on:remove="remove($event)"
+          v-on:act1="remove($event)"
           v-on:confirm="confirm($event)"
           :key="index"/>
         </v-tab-item>
@@ -29,8 +29,10 @@
           :id="order._id"
           :total="order.price"
           :items="order.merchants"
-          v-on:remove="remove($event)"
-          v-on:confirm="confirm($event)"
+          v-on:act1="contact($event)"
+          v-on:confirm="ship($event)"
+          btn1="聯絡買家"
+          btn2="確認出貨"
           :key="index"/>
         </v-tab-item>
         <v-tab-item>
@@ -42,8 +44,9 @@
           :id="order._id"
           :total="order.price"
           :items="order.merchants"
-          v-on:remove="remove($event)"
-          v-on:confirm="confirm($event)"
+          v-on:act1="contact($event)"
+          v-on:confirm="doneship($event)"
+          btn2="已完成"
           :key="index"/>
         </v-tab-item>
         <v-tab-item>
@@ -55,8 +58,9 @@
           :id="order._id"
           :total="order.price"
           :items="order.merchants"
-          v-on:remove="remove($event)"
+          v-on:act1="remove($event)"
           v-on:confirm="confirm($event)"
+          btn2="null"
           :key="index"/>
         </v-tab-item>
       </v-tabs>
@@ -110,6 +114,44 @@ export default {
       this.updateOrder(event.id, 'cfn')
       // this.status.splice(event.idx, 1)
     },
+    contact(event) {
+      console.log(event);
+      this.$emit("openChat", {"to": event.buyer})
+      // this.updateOrder(event.id, 'cfn')
+      // this.status.splice(event.idx, 1)
+    },
+    ship(event) {
+      console.log(event);
+      this.$swal.fire({
+        title: '確認更改訂單狀態為 \'出貨\' ？ ',
+        text: `請確認您已經與買家達成面交協議`,
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `確認`,
+        denyButtonText: `取消`,
+      }).then((res) => {
+        if(res.isConfirmed){
+          this.updateOrder(event.id, 'ship');
+        }
+      });
+      // this.status.splice(event.idx, 1)
+    },
+    doneship(event) {
+      console.log(event);
+      this.$swal.fire({
+        title: '確認更改訂單狀態為 \'出貨\' ？ ',
+        text: `請確認您已經將商品交付給買家`,
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `確認`,
+        denyButtonText: `取消`,
+      }).then((res) => {
+        if(res.isConfirmed){
+          this.updateOrder(event.id, 'doneShipping');
+        }
+      });
+      // this.status.splice(event.idx, 1)
+    },
     async updateOrder(id, action){
       this.$emit("loading");
       const res = await this.$axios.post(
@@ -147,10 +189,6 @@ export default {
             resOrders[idx].merchants[oIdx].photoSRC = photoSRC;
           }
         }
-        // todo:[],
-        // running:[],
-        // going:[],
-        // done:[],
         const s = order.status[order.cState].status;
         if(s == 'newed')
           this.orders.todo.push(order)

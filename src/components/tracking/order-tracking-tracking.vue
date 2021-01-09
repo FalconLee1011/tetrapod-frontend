@@ -80,6 +80,7 @@
                 </v-card-title>
                 <v-card-actions>
                   <v-spacer />
+                  <v-btn @click="doneGatering" :disabled="!orderIsReadyToBeDone" color="primary">確認收貨</v-btn>
                   <v-btn :disabled="!orderIsDone" color="primary">完成訂單</v-btn>
                 </v-card-actions>
               </v-card>
@@ -116,8 +117,8 @@ export default {
         price: 0,
         shipment_method: "",
         status: [],
+        cState: 0,
       },
-      orderIsDone: false,
       timelineStatus:[
         {statusName: "訂單送出", status: true, timestamp: "2020/10/21"},
         {statusName: "賣家已接到訂單", status: true, timestamp: "2020/10/21"},
@@ -153,6 +154,18 @@ export default {
   mounted() {
     this.fetchOrder();
   },
+  computed: {
+    orderIsDone(){
+      if(this.order.status[this.order.cState])
+        return this.order.status[this.order.cState].status == "doneGatering";
+      return false;
+    },
+    orderIsReadyToBeDone(){
+      if(this.order.status[this.order.cState])
+        return this.order.status[this.order.cState].status == "doneShipping";
+      return false;
+    },
+  },
   methods: {
     async fetchOrder(){
       const res = await this.$axios.post(
@@ -168,6 +181,35 @@ export default {
       );
       this.order = res.data.order[0];
       console.log(this.order);
+    },
+    async doneGatering(){
+      this.$swal.fire({
+        title: '確認更改訂單狀態為 \'已取貨\' ？ ',
+        text: `請確認您已收到商品，按下確認後，將進入評價階段。`,
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `確認`,
+        denyButtonText: `取消`,
+      }).then(async (res) => {
+        if(res.isConfirmed){
+          this.$emit("loading");
+          const id = this.$route.params.id
+          const res = await this.$axios.post(
+            `${API_PREFIX}/merchant/order/update-order`,
+            {
+              orderID: id,
+              action: "doneGatering",
+            },
+            {
+              headers: {
+                token: this.$store.getters.token
+              }
+            },
+          );
+          console.log(res);
+          this.$emit("doneloading");
+        }
+      });
     },
     epochConverter(epoch) {
       let date = new Date(0);
