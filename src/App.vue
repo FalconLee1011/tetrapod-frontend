@@ -84,6 +84,7 @@ export default {
       this.search();
     },
     search: function(keyword){
+      this.isLoading = true;
       console.log(keyword);
       let url = new URL(window.location.href);
       let search = {}
@@ -165,6 +166,21 @@ export default {
     },
     newMessage(msg){
       this.$refs["knock"].newMessage(msg);
+    },
+    bidUpdateResult(msg){
+      console.log(msg);
+      if(this.$router.currentRoute.name == 'merchantPage')
+        this.$refs.routerview.bidUpdateResult(msg);
+      else{
+        if(msg.type == 'update' && msg.msg == 'winner' && msg.payload.winner == this.$store.getters.account){
+          this.$toast.success(`您已得標 ${msg.payload.merchant_name} ，系統已自動將商品加入您的購物車！`,
+            {
+              timeout: 3000,
+              position: 'top-right'
+            }
+          )
+        }
+      }
     }
   }
 }

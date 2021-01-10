@@ -9,6 +9,7 @@
       ></v-progress-circular>
     </v-overlay>
     <v-card-title>
+      <v-chip label outlined color="#e67700" class="mr-5">競標</v-chip>
       <h2>{{ merchant_name }}</h2>
     </v-card-title>
     <v-row>
@@ -162,7 +163,7 @@
                 class="my-0 subtitle-1 cyan--text text--lighten-2 text-h4"
                 align-self="center"
               >
-                NT {{ formatPrice(the_highest_price) }}
+                NT {{ formatPrice(bidding_price) }}
               </v-spacer>
             </v-col>
             <v-col cols="3" class="pr-0">
@@ -184,6 +185,8 @@
                 font-weight-bold
                 min-width="90px"
                 class="font-weight-bold mr-2"
+                :disabled="!isRunning"
+                @click="bid"
               >
                 出價
               </v-btn>
@@ -280,7 +283,7 @@ export default {
     },
     // is_bidding(){ return Boolean(this.is_bidding); },
     endTime(){ return this.bidding_endtime; },
-    customer_price(){ return parseInt(this.bidding_price_perbid); },
+    // customer_price(){ return parseInt(this.bidding_price_perbid); },
     per_bid_price(){ return parseInt(this.bidding_price_perbid); },
     the_highest_price(){ return 0; },
     comments_cmp(){ return this.comments; },
@@ -299,8 +302,9 @@ export default {
     days: 1,
     hours: 0,
     minutes: 21,
-    bidding_price: null,
-    bidding_price_perbid: null,
+    bidding_price: 0,
+    bidding_price_perbid: 0,
+    customer_price: 0,
     photo: [],
     bidding_endtime: null,
     basePicIndex: 0,
@@ -310,22 +314,7 @@ export default {
     imageNotFound: false,
     comments: [],
     isAddingToCart: false,
-    // comments: [
-    //   {
-    //     url:
-    //       "https://www.screenja.com/static/img/thumbs/nyan-cat-1-normal-636.png",
-    //     buyer: "Andy00002",
-    //     comment_star: 1.1,
-    //     text: "爛死了，我買的物理課本竟然沒有附序號！！！",
-    //   },
-    //   {
-    //     url:
-    //       "https://www.screenja.com/static/img/thumbs/nyan-cat-1-normal-636.png",
-    //     buyer: "321",
-    //     comment_star: 4.1,
-    //     text: "這買家不錯哦",
-    //   },
-    // ],
+    isRunning: false,
     picUrls:[],
     startTime: "December 16, 2020 12:03:00",
     times: [
@@ -442,11 +431,8 @@ export default {
       );
       const merchant = res.data.merchant;
 
-      // const keys = Object.keys(merchant);
-      // for(let idx in keys){
-      //   const key = keys[idx]
-      //   this[key] = merchant[key];
-      // }
+      var d = new Date(0); 
+      d.setUTCSeconds(merchant.bidding_endtime);
       this.price = merchant.price
       this.photo = merchant.photo || []
       this.merchant_name = merchant.merchant_name
@@ -455,19 +441,85 @@ export default {
       this.is_bidding = merchant.is_bidding
       this.bidding_price = merchant.bidding_price
       this.bidding_price_perbid = merchant.bidding_price_perbid
-      this.bidding_endtime = merchant.bidding_endtime
+      this.customer_price = merchant.bidding_price_perbid;
+      this.bidding_endtime = d;
       this.account = merchant.account
       this.status = merchant.status || ""
       this.comments = merchant.comments || []
-
+      this.isRunning = (merchant.hasBeenWon) ? false : true;
       this.updateTimer();
       this.timeinterval = setInterval(this.updateTimer, 1000);
+
+      if(!this.isRunning && merchant.winner_id == this.$store.getters.account){
+        this.$swal({
+          icon: 'warning',
+          title: `您已得標此商品！`,
+          text: `此商品已在您的購物車內，請盡快結帳！`,
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: `前往購物車`,
+          cancelButtonText: `我就是不要現在結帳_(:3 ⌒ﾞ)_`,
+        }).then((r) => {
+          if(r.isConfirmed){ this.$router.push(`/cart`) }
+        });
+      }
+      else if(!this.isRunning){
+        this.$swal({
+          icon: 'error',
+          title: `此商品已售出！`,
+          text: `此商品已結標！感謝您的參與！`,
+          showConfirmButton: true,
+          confirmButtonText: `好`,
+        })
+      }
     },
     async init(){
       this._tk();
       await this.fetchMerchant(this.$route.params.id);
       await this.fetchPhotos(this.photo);
     }, 
+    bidUpdateResult(msg){
+      console.log(msg);
+      if(msg.type == 'update' && msg.payload.merchant_id == this.$route.params.id){
+        this.bidding_price = msg.payload.bidding_price;
+        this.$toast.info(`競標價錢已更新！`,
+          {
+            timeout: 1200,
+            position: 'top-right'
+          }
+        )
+      }
+      if(msg.type == 'update' && msg.msg == 'winner' && msg.payload.winner == this.$store.getters.account){
+        this.isRunning = false;
+        this.$swal({
+          icon: 'warning',
+          title: `您已得標 ${msg.payload.merchant_name} ，系統已自動將商品加入您的購物車！`,
+          showConfirmButton: true,
+          showCancelButton: true,
+          confirmButtonText: `前往購物車`,
+          cancelButtonText: `先等等`,
+        }).then((r) => {
+          if(r.isConfirmed){ this.$router.push(`/cart`) }
+        });
+      }else if(msg.type == 'update' && msg.msg == 'winner' && msg.payload.winner != this.$store.getters.account){
+        this.isRunning = false;
+        this.$swal({
+          icon: 'error',
+          title: `此商品已售出！`,
+          text: `此商品已結標！感謝您的參與！`,
+          showConfirmButton: true,
+          confirmButtonText: `好`,
+        })
+      }
+    },
+    bid(){
+      const data = {
+        token: this.$store.getters.token,
+        merchant_id: this.$route.params.id,
+        bid_amount: this.customer_price
+      };
+      this.$socket.client.emit("bidUpdate", data);
+    },
     _tk(){
       this.$axios.get(
         `${API_PREFIX}/tracking/browsing-history/push?merchantid=${this.$route.params.id}`,

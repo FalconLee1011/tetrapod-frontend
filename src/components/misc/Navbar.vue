@@ -13,7 +13,6 @@
         v-model="keyword"
         ref="searchbar"
         @mouseover="toggleSearchbarHint"
-        @mouseleave="toggleSearchbarHint"
         @click:append="$emit('search', keyword)"
       />
     <v-spacer />
@@ -135,10 +134,10 @@ export default {
         this.searchbarHint = `在此輸入您想搜尋的商品關鍵字，例如：${select}`;
         this.$refs.searchbar.focus();
       }
-      else {
-        this.searchbarHint = "搜尋...";
-        this.$refs.searchbar.blur();
-      }
+      // else {
+      //   this.searchbarHint = "搜尋...";
+      //   this.$refs.searchbar.blur();
+      // }
     },
   },
 }

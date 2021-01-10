@@ -7,6 +7,8 @@
     <profileBanner 
       :title="title"
       :uploader="uploader"
+      :isbidding=type
+      :hasBeenWon=hasBeenWon
       type="merchantCard" 
     />
     <div
@@ -87,7 +89,10 @@ export default {
       default: "Uploader"
     },
     type: {
-      type: Number,
+      type: Boolean,
+    },
+    hasBeenWon: {
+      type: Boolean,
     },
     image:{
       default: []

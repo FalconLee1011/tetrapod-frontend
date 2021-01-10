@@ -69,11 +69,11 @@
       </v-row>
       <v-row v-if="bidding_or_not">
         <v-col cols='3'>
-          <v-text-field filled label="每標最低出價" v-model="bidding_price">
+          <v-text-field filled label="每標最低出價" v-model="bidding_price_perbid">
           </v-text-field>
         </v-col>
         <v-col cols='3'>
-          <v-text-field filled label="最高價" v-model="bidding_price_perbid">
+          <v-text-field filled label="最高價" v-model="bidding_price">
           </v-text-field>
         </v-col>
         <v-col cols='3'>
@@ -247,21 +247,18 @@ export default{
       for (let idx = 0; idx < this.files.length; idx++){
         data.append("files[]", this.files[idx]);
       }
-
-      API_PREFIX;
-      let ENDtime = new Date(`${this.bidding_endtime}T${this.bidding_endtime_time}:00Z`);
-
-      console.log(this.bidding_or_not);
-  
       data.append('name', this.name);
-      data.append('price', this.price);
+      if (this.bidding_or_not) data.append('price', this.bidding_price);
+      else data.append('price', this.price);
       data.append('quantity', this.quantity);
       data.append('intro', this.intro);
       data.append('bidding_or_not', this.bidding_or_not);
       data.append('new_or_not', this.new_or_not);
       data.append('bidding_price_perbid', this.bidding_price_perbid);
-      data.append('bidding_price', this.bidding_price);
-      data.append('bidding_endtime', ENDtime.getTime() / 1000);
+      if(this.bidding_endtime && this.bidding_endtime_time){
+        let ENDtime = new Date(`${this.bidding_endtime}T${this.bidding_endtime_time}:00Z`);
+        data.append('bidding_endtime', ENDtime.getTime() / 1000);
+      }
 
       try {
         const res = await this.$axios.post(

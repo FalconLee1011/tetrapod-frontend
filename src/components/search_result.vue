@@ -47,6 +47,8 @@
               :intro=item.discription
               :price=item.price
               :merchantID=item._id
+              :type=item.is_bidding
+              :hasBeenWon=item.hasBeenWon
             />
           </v-col>
         </v-row>
@@ -91,7 +93,7 @@ export default {
       );
       console.log(res);
       this.items = res.data.merchants;
-      
+      this.$emit("doneloading");
       this.isLoading = false;
     },
   },
