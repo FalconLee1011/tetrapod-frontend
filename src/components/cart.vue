@@ -16,6 +16,7 @@
         :name=market.account
         :merchants=market.items
         :total=market.total
+        v-on:refresh="fetchCart"
       />
     </v-card-text>
     <v-card-text v-if="Object.keys(marketItems).length == 0">
@@ -73,6 +74,7 @@ export default {
       ]
     ),
     async fetchCart(){
+      this.marketItems={};
       let markets = new Set([]);
       const res = await this.$axios.get(
         `${API_PREFIX}/merchant/get_cart`,
@@ -100,6 +102,9 @@ export default {
       console.log("READY");
       this.ready = true;
       this.$emit('doneloading');
+      let clone = {};
+      Object.assign(clone, this.marketItems);
+      this.marketItems = clone;
     },
     async fetchMarkets(markets){
       markets.forEach(async market => {
