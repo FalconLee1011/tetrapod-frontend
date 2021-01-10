@@ -21,6 +21,8 @@
           :name="merchant.merchant_name"
           :howmany="merchant.merchant_count"
           :price="merchant.price"
+          :idx="idx"
+          v-on:delete="deleteMerchant($event)"
         />
       </p>
       <div style="position: absolute; right: 100px; font-weight: bold">
@@ -37,6 +39,8 @@
 <script>
 import cartbar from "./cart_bar.vue";
 import { mapActions } from "vuex";
+
+const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 export default {
   name: "cart_card",
   components: { cartbar },
@@ -56,6 +60,40 @@ export default {
     ),
     checkout(){
       this.$router.push(`/checkout/${this.name}`);
+    },
+    async deleteMerchant(e){
+      console.log(this.merchants[e].merchant_id);
+      try{
+        const res = await this.$axios.post(
+        `${API_PREFIX}/merchant/delete_cart`,
+        {
+          merchant_id:this.merchants[e].merchant_id
+        },
+        {
+          headers:{
+            token: this.$store.getters.token
+          }
+        }
+      );
+      this.$emit('refresh');
+      this.$swal({
+          title: "刪除成功！",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 3000,
+        }).then(() => {
+          console.log(res);
+        });
+      }catch(error){
+        console.log(error);
+        this.$swal({
+          title: "刪除失敗！",
+          icon: "error",
+          showConfirmButton: false,
+          timer: 3000,
+        })
+      }
+      
     }
   },
 };

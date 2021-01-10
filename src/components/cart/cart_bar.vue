@@ -1,29 +1,36 @@
 <template>
   <div>
-    <v-list-item>
-      <v-list-item-avatar color="primary" size="40" class="rounded-0">
+    <v-row>
+    <v-col cols="1"> 
+      <v-avatar color="primary" size="40" class="rounded-0">
         <img
           :src="blobLink"
         />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title>{{ name }}</v-list-item-title>
-      </v-list-item-content>
+      </v-avatar>
+    </v-col>
 
-      <v-list-item-content v-if="type == 'cart'">
-        <v-list-item-title><countstepper
+      <v-col cols="4">{{ name }}</v-col>
+
+      <v-col cols="4" v-if="type == 'cart'">
+        <countstepper
           :n=howmany
-        ></countstepper></v-list-item-title>
-      </v-list-item-content>
+        ></countstepper>
+      </v-col>
 
-      <v-list-item-content v-if="type != 'cart'">
-        <v-list-item-title>{{ howmany }}</v-list-item-title>
-      </v-list-item-content>
+      <v-col cols="4" v-if="type != 'cart'">
+        {{ howmany }}
+      </v-col>
 
-      <v-list-item-content>
-        <v-list-item-title>NT {{ price.toLocaleString() }}</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+      <v-col cols="2">
+        NT {{ price.toLocaleString() }}
+      </v-col>
+
+      <v-col cols="1">
+        <v-btn @click="$emit('delete', idx)" icon> 
+          <v-icon>mdi-trash-can-outline</v-icon>
+        </v-btn>
+      </v-col> 
+    </v-row>
     <v-divider></v-divider>
   </div>
 </template>
@@ -50,6 +57,10 @@ export default {
     price: {
       type: Number,
       default: 0,
+    },
+    idx: {
+      type: Number,
+      default: null,
     },
     type: {
       type: String,
