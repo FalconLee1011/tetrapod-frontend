@@ -86,9 +86,13 @@ export default {
       const tmp=res.data.history.browsing_history;
       console.log(tmp);
       for (let idx = 0; idx < tmp.length; idx++){
-        const result = await this.$axios.get(`${API_PREFIX}/merchant/get?id=${tmp[idx]}`);
-        console.log(result.data.merchant);
-        this.items.push(result.data.merchant);
+        try {
+          const result = await this.$axios.get(`${API_PREFIX}/merchant/get?id=${tmp[idx]}`);
+          console.log(result.data.merchant);
+          this.items.push(result.data.merchant);
+        } catch (error) {
+          console.log(error);
+        }
       }
       this.isLoading = false;
     }
