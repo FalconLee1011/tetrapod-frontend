@@ -4,7 +4,11 @@
       <img :src="avatar">
     </v-list-item-avatar>
     <v-list-item-content v-if="(type == 'merchantCard')">
-      <v-list-item-title>{{title}}</v-list-item-title>
+      <v-list-item-title>
+        <v-chip label outlined small color="#e67700" v-if="isbidding && !hasBeenWon">競標</v-chip>
+        <v-chip label outlined small color="#ff0000" v-if="isbidding && hasBeenWon">已結標</v-chip>
+        {{title}}
+      </v-list-item-title>
       <v-list-item-subtitle>{{uploader}}</v-list-item-subtitle>
     </v-list-item-content>
 
@@ -42,6 +46,12 @@ export default {
     avatar: {
       type: String,
       default: "https://www.screenja.com/static/img/thumbs/nyan-cat-1-normal-636.png"
+    },
+    isbidding:{
+      type: Boolean,
+    },
+    hasBeenWon:{
+      type: Boolean,
     },
   }
 }

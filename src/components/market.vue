@@ -67,6 +67,8 @@
               :intro=item.discription
               :price=item.price
               :merchantID=item._id
+              :type=item.is_bidding
+              :hasBeenWon=item.hasBeenWon
             />
           </v-col>
         </v-row>

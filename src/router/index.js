@@ -39,6 +39,7 @@ const routes = [
   },
   {
     path: "/merchant/:id",
+    name: "merchantPage",
     component: product_page
   },
   {
