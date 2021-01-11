@@ -4,31 +4,19 @@
       <v-col cols="4">
         <v-row align="center">
           <v-col cols="4" class="py-0">
-            <v-img max-height="5em" max-width="5em" src="https://www.screenja.com/static/img/thumbs/nyan-cat-1-normal-636.png">
+            <v-img max-height="5em" max-width="5em" :src="img">
             </v-img>
           </v-col>
           <v-col cols="8" class="pl-0 body-1">
-            商品名稱
+            {{name}}
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="2" align="center">
-        <p v-if="edit===false" class="mb-0 font-weight-lighter body-1">{{stock}}</p>
-        <v-text-field
-          justify="center"
-          v-model="stock"
-          v-if="edit===true"
-          class="centered-input"
-        ></v-text-field>
+        <p class="mb-0 font-weight-lighter body-1">{{stock}}</p>
       </v-col>
       <v-col cols="2" align="center">
-        <p v-if="edit===false" class="mb-0 font-weight-medium body-1" >NT {{ formatPrice(price) }}</p>
-        <v-text-field
-          justify="center"
-          v-model="price"
-          v-if="edit===true"
-          class="centered-input"
-        ></v-text-field>
+        <p class="mb-0 font-weight-medium body-1" >NT {{ formatPrice(price) }}</p>
       </v-col>
       <v-col cols="4" align="center" class="text-h6">
         <v-btn
@@ -46,6 +34,7 @@
           light
           font-weight-bold
           class="font-weight-bold ml-3"
+          :disabled="bidding"
           @click="_delete()"
         >
         <v-icon left dense>
@@ -66,8 +55,7 @@
   export default {
     name: 'cart_bar',
     data:()=>({
-      edit:false,
-      delete:false
+      delete:false,
     }),
     methods:{
       formatPrice(value) {
@@ -75,20 +63,21 @@
         return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       },
       edit_status(){
-        if(this.edit === false)
-          this.edit=true;
-        else
-          this.edit=false;
+        this.$emit("return_edit",this.price,this.stock)
       },
       _delete(){
         this.$emit("return_delete")
-      }
+      },
     },
     props:{
-      img: String,
+      img: Object,
       name: String,
       stock: Number,
-      price: Number,          
+      price: Number,   
+      bidding: Boolean       
+    },
+    mounted(){
+      //console.log(this.img)
     }
   }
 </script>
