@@ -48,7 +48,7 @@
                 style="overflow: auto"
                 ref="chatWindow"
               >
-                <v-card-text>
+                <v-card-text :key="reloadTrigger">
                   <v-textarea
                     v-for="(knockMsg, idx) in knock.messages"
                     :key="`${idx}_msg_of_${knock._id}`"
@@ -109,12 +109,13 @@ export default {
     return {
       from_user: true,
       dialog: false,
-      debug: true,
+      debug: false,
       model: null,
       tab: null,
       knocks: {},
       input_message: "",
       knockLoading: true,
+      reloadTrigger: false, 
     };
   },
   watch: {
@@ -122,6 +123,7 @@ export default {
       // console.log("LOG FROM WATCH");
       // console.log(this.knocks);
       this.DEBUG_forceReload();
+      this.reloadTrigger = !this.reloadTrigger
     },
   },
   methods: {
