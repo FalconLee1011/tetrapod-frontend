@@ -16,6 +16,7 @@ import history from '../components/history.vue'
 import search from '../components/misc/search.vue'
 import order_management from '../components/Order_management.vue'
 import search_result from '../components/search_result.vue'
+import edit from '../components/pro_manager/edit_merchant.vue'
 
 Vue.use(VueRouter)
 
@@ -113,6 +114,14 @@ const routes = [
     path: "/search",
     component: search_result
   },
+  {
+    path: "/edit",
+    component: edit,
+    name: "edit",
+    meta:{
+      redirectLocationWhenAuthFailed: "/"
+    }
+  }
 ]
 
 // eslint-disable-next-line no-new
