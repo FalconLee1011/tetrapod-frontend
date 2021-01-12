@@ -113,6 +113,7 @@ export default {
       model: null,
       tab: null,
       knocks: {},
+      currentKnock: {},
       input_message: "",
       knockLoading: true,
       reloadTrigger: false, 
