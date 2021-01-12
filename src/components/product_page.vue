@@ -252,12 +252,10 @@
               style="text-align: center;"
             >暫無商品評價！</div>
             <c_card
-              v-for="item in comments_cmp"
+              v-for="item in comments"
               :key="item.id"
-              :url="item.url"
-              :buyer="item.buyer"
-              :comment_star="item.comment_star"
-              :text="item.text"
+              :comment_star="item.star"
+              :text="item.comments"
             ></c_card>
           </v-container>
         </v-card>
@@ -445,7 +443,7 @@ export default {
       this.bidding_endtime = d;
       this.account = merchant.account
       this.status = merchant.status || ""
-      this.comments = merchant.comments || []
+      this.comments = merchant.star || []
       this.isRunning = (merchant.hasBeenWon) ? false : true;
       this.updateTimer();
       this.timeinterval = setInterval(this.updateTimer, 1000);
