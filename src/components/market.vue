@@ -126,7 +126,7 @@ export default {
       const account = res.data.account
       this.account = account
       this.marketname = account.nick_name || account.account
-      this.message = account.market_discription || "摁、看來是個安靜的人在賣東西。"
+      this.message = account.market_description || "摁、看來是個安靜的人在賣東西。"
       this.marketProfile = await this.generateBlob(account.account_avator);
       this.market_star = account.star.star
       this.market_star_count = account.star.count
