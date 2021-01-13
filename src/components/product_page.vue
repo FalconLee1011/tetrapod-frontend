@@ -26,7 +26,7 @@
               align="center"
               justify="center"
             >
-              <v-icon
+              <v-icon 
                 class="mx-auto"
                 style="vertical-align: middle !important;"
                 size="14rem"
@@ -55,7 +55,7 @@
           v-if="isReady && picUrls.length == photo.length && !imageNotUploaded && !imageNotFound"
         >
           <v-col align="center">
-            <v-btn
+            <v-btn 
               icon
               @click="shiftBasePicIndex(-1)"
               :disabled="basePicIndex == 0"
@@ -63,7 +63,7 @@
               <v-icon>mdi-chevron-left</v-icon>
             </v-btn>
           </v-col>
-          <v-col
+          <v-col 
             class="image mr-1 ml-1"
             align="center"
             cols="2"
@@ -72,14 +72,14 @@
             :id="`pic${i}`"
             :class="{selected: (basePicIndex + (i - 1) == selectedPhotoIndex)}"
           >
-            <v-img
+            <v-img 
               aspect-ratio="1.25"
               :src="picUrls[basePicIndex + (i - 1)]"
               @click="selectPic(i)"
             />
           </v-col>
           <v-col align="center">
-            <v-btn
+            <v-btn 
               icon
               @click="shiftBasePicIndex(1)"
               :disabled="basePicIndex + 4 == picUrls.length || picUrls.length <= 4"
@@ -165,7 +165,7 @@
           <v-row>
             <v-col cols="3" class="pt-0 pb-0"> 目前最高出價 </v-col>
             <v-col cols="8" class="pt-0 pb-0">
-              每標最低金額：NT {{ per_bid_price }}
+              每標最低金額：NT {{ per_bid_price }} 
             </v-col>
           </v-row>
           <v-row>
@@ -259,7 +259,7 @@
         <v-card class="pa-2 ma-2" color="#282828">
           <v-card-title><h2 style="font-weight: lighter">評價</h2></v-card-title>
           <v-container>
-            <div
+            <div 
               v-if="this.comments_cmp.length == 0"
               style="text-align: center;"
             >暫無商品評價！</div>
@@ -328,13 +328,13 @@ export default {
     market_profile: "",
     picUrls:[],
     market_info: {
-      account: "",
-      account_avator: "",
-      first_name: "",
-      last_name: "",
-      nick_name: "",
+      account: "", 
+      account_avator: "", 
+      first_name: "", 
+      last_name: "", 
+      nick_name: "", 
       star: { count: 0, star: 0 }
-    },
+    }, 
     startTime: "December 16, 2020 12:03:00",
     times: [
       { id: 0, text: "Days", time: 1 },
@@ -443,10 +443,10 @@ export default {
     async fetchPhotos(photos){
       let photoURLs = [];
       if(this.photo.length == 0) { this.imageNotUploaded = true; this.isReady = true; return; }
-      await photos.forEach(async el => {
+      await photos.forEach(async el => { 
         const image = await this.generateBlob(el);
         if(this.photo.length == 1 && image == undefined){ this.imageNotFound = true; this.isReady = true; return;}
-        photoURLs.push(image);
+        photoURLs.push(image); 
       });
       this.picUrls = photoURLs
       this.isReady = true;
@@ -468,7 +468,7 @@ export default {
       );
       const merchant = res.data.merchant;
 
-      var d = new Date(0);
+      var d = new Date(0); 
       console.log(merchant.bidding_endtime);
       d.setUTCSeconds(merchant.bidding_endtime);
       this.price = merchant.price
@@ -516,7 +516,7 @@ export default {
       this._tk();
       await this.fetchMerchant(this.$route.params.id);
       await this.fetchPhotos(this.photo);
-    },
+    }, 
     bidUpdateResult(msg){
       console.log(msg);
       if(msg.type == 'update' && msg.payload.merchant_id == this.$route.params.id){
@@ -552,19 +552,18 @@ export default {
       }
     },
     bid(){
-      if(!this.$store.getters.authPassed){
-        this.$swal({ icon: "error", title: "請先登入！" })
-        return;
-      }else if(this.$store.getters.account == this.account){
-        this.$swal({ icon: "error", title: "您無法對自己的產品進行競標", text: "抓到" })
-        return;
-      }
       if(this.customer_price < this.per_bid_price){
         this.$swal({
           icon: 'error',
           title: `競標錯誤！`,
           text: `您的出價小於規定每標最低金額(${this.per_bid_price})`,
         })
+      }
+      if(!this.$store.getters.authPassed){
+        this.$swal({ icon: "error", title: "請先登入！" })
+        return;
+      }else if(this.$store.getters.account == this.account){
+        this.$swal({ icon: "error", title: "您無法對自己的產品進行競標", text: "抓到" })
         return;
       }
       const data = {

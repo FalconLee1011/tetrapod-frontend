@@ -58,12 +58,12 @@
       </template>
     </v-img>
     <v-card-text @click="$router.push(`/merchant/${merchantID}`)" class="hover" >
-      {{intro.slice(0, 20)}} <span v-if="intro.length >= 20">...</span>
+      {{intro}}
     </v-card-text>
     <v-card-actions>
       <v-btn color=secondary text elevation=0 >NT {{price.toLocaleString()}}</v-btn>
       <v-spacer />
-      <v-btn @click="putInCart" color=primary text elevation=0 :disabled=isAddingToCart>
+      <v-btn @click="putInCart" v-if="!type" color=primary text elevation=0 :disabled=isAddingToCart>
         <v-progress-circular v-if="isAddingToCart" size="18" width="2" indeterminate color="primary" />
         放入購物車
       </v-btn>
@@ -108,7 +108,7 @@ export default {
     merchantID: {
       type: String,
       default: "c8763c8763c8763c8763c8763"
-    }
+    },
   },
   data() {
     return {
