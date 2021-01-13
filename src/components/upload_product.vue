@@ -283,6 +283,7 @@ export default{
         }).then(() => {
           this.isUploading = false
           console.log(res);
+          this.$router.push(`/`);
         });
       } catch (error) {
         console.log(error);
