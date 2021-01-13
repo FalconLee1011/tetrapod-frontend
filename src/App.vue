@@ -131,12 +131,12 @@ export default {
   },
   sockets: {
     connected() {
-      // this.$toast.warning(
-      //   `[DEBUG] IO connected! and auth is ${this.$store.getters.authPassed}`,
-      //   {
-      //     timeout: 1500,
-      //   }
-      // );
+      this.$toast.warning(
+        `[DEBUG] IO connected! and auth is ${this.$store.getters.authPassed}`,
+        {
+          timeout: 1500,
+        }
+      );
       if(this.$store.getters.authPassed){
         let user = window.localStorage.getItem('account');
         let token = window.localStorage.getItem('token');
@@ -145,12 +145,12 @@ export default {
     },
     inited(msg){
       this.identity = msg.account;
-      // this.$toast.warning(
-      //   `[DEBUG] IO Inited, welcome, ${msg.account}`,
-      //   {
-      //     timeout: 1500,
-      //   }
-      // );
+      this.$toast.warning(
+        `[DEBUG] IO Inited, welcome, ${msg.account}`,
+        {
+          timeout: 1500,
+        }
+      );
       this.$refs["knock"].init();
     },
     notify(msg){
