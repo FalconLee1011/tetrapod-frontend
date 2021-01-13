@@ -9,7 +9,8 @@
       ></v-progress-circular>
     </v-overlay>
     <v-card-title>
-      <v-chip label outlined color="#e67700" class="mr-5">競標</v-chip>
+      <v-chip label outlined color="#e67700" class="mr-5" v-if="is_bidding && isRunning">競標</v-chip>
+      <v-chip label outlined color="#ff0000" class="mr-5" v-if="is_bidding && !isRunning">已結標</v-chip>
       <h2>{{ merchant_name }}</h2>
     </v-card-title>
     <v-row>
@@ -87,10 +88,18 @@
             </v-btn>
           </v-col>
         </v-row>
-        <v-card color="#282828" elevation="5">
+        <v-card @click="$router.push(`/market/${account}`)" color="#282828" elevation="5">
           <v-card-title :on="account" class="py-0 mt-5">
             <v-col cols="2" class="pa-2">
               <v-img
+                v-if="market_profile"
+                max-height="3em"
+                max-width="3em"
+                style="border-radius: 50%"
+                :src="market_profile"
+              ></v-img>
+              <v-img
+                v-else
                 max-height="3em"
                 max-width="3em"
                 style="border-radius: 50%"
@@ -99,7 +108,7 @@
             </v-col>
             {{ account }}
             <v-rating
-              :value="sell_star"
+              :value="market_info.star.star"
               color="amber"
               readonly
               dense
@@ -107,6 +116,7 @@
               half-increments
               size="25"
             ></v-rating>
+            ({{market_info.star.count}})
           </v-card-title>
         </v-card>
       </v-col>
@@ -140,6 +150,8 @@
               class="pb-0 font-weight-bold"
               :time="times"
             >
+              競標截止於 {{ bidding_endtime.getFullYear()}}/{{ bidding_endtime.getMonth() + 1}}/{{ bidding_endtime.getDate()}} {{ bidding_endtime.getHours()}}:{{ bidding_endtime.getMinutes()}}
+              <v-chip label outlined color="#ff0000">一口價 {{price}}</v-chip>
               <v-container class="pl-0 mb-0"
                 >距離競標結束還有 {{ times[0].time }} 日
                 {{ times[1].time }} 個小時 {{ times[2].time }} 分鐘
@@ -153,7 +165,7 @@
           <v-row>
             <v-col cols="3" class="pt-0 pb-0"> 目前最高出價 </v-col>
             <v-col cols="8" class="pt-0 pb-0">
-              每標最低金額：NT {{ per_bid_price }}
+              每標最低金額：NT {{ per_bid_price }} 
             </v-col>
           </v-row>
           <v-row>
@@ -224,14 +236,14 @@
         <!-- 到這 -->
         <v-card-actions v-if="is_bidding == false">
           <v-spacer></v-spacer>
-          <v-btn
+          <!-- <v-btn
             color="deep-purple lighten-3"
             light
             font-weight-bold
             class="font-weight-bold mr-2"
           >
             直接購買
-          </v-btn>
+          </v-btn> -->
           <v-btn
             color="deep-purple lighten-3"
             light
@@ -252,12 +264,10 @@
               style="text-align: center;"
             >暫無商品評價！</div>
             <c_card
-              v-for="item in comments_cmp"
+              v-for="item in comments"
               :key="item.id"
-              :url="item.url"
-              :buyer="item.buyer"
-              :comment_star="item.comment_star"
-              :text="item.text"
+              :comment_star="item.star"
+              :text="item.comments"
             ></c_card>
           </v-container>
         </v-card>
@@ -315,7 +325,16 @@ export default {
     comments: [],
     isAddingToCart: false,
     isRunning: false,
+    market_profile: "",
     picUrls:[],
+    market_info: {
+      account: "", 
+      account_avator: "", 
+      first_name: "", 
+      last_name: "", 
+      nick_name: "", 
+      star: { count: 0, star: 0 }
+    }, 
     startTime: "December 16, 2020 12:03:00",
     times: [
       { id: 0, text: "Days", time: 1 },
@@ -331,6 +350,13 @@ export default {
       ]
     ),
     async putInCart(){
+      if(!this.$store.getters.authPassed){
+        this.$swal({ icon: "error", title: "請先登入！" })
+        return;
+      }else if(this.$store.getters.account == this.account){
+        this.$swal({ icon: "error", title: "業績不是靠這樣刷出來der" })
+        return;
+      }
       this.isAddingToCart = true;
       const id = this.$route.params.id;
       const res = await this.$axios.post(
@@ -394,7 +420,7 @@ export default {
       if (t >= 0) {
         this.times[3].time = Math.floor((t / 1000) % 60); //seconds
         this.times[2].time = Math.floor((t / 1000 / 60) % 60); //minutes
-        this.times[1].time = Math.floor((t / (1000 * 60 * 60)) % 24) - 8; //hours
+        this.times[1].time = Math.floor((t / (1000 * 60 * 60)) % 24); //hours
         this.times[0].time = Math.floor(t / (1000 * 60 * 60 * 24)); //days
       } else {
         this.times[3].time = this.times[2].time = this.times[1].time = this.times[0].time = 0;
@@ -425,6 +451,17 @@ export default {
       this.picUrls = photoURLs
       this.isReady = true;
     },
+    async fetchMarket(name){
+      const res = await this.$axios.post(
+        `${API_PREFIX}/accounts/get`,
+        {
+          account: name,
+        }
+      )
+      this.market_info = res.data.account;
+      this.market_profile = await this.generateBlob(res.data.account.account_avator);
+      console.log(this.market_info);
+    },
     async fetchMerchant(id){
       const res = await this.$axios.get(
         `${API_PREFIX}/merchant/get?id=${id}`,
@@ -432,6 +469,7 @@ export default {
       const merchant = res.data.merchant;
 
       var d = new Date(0); 
+      console.log(merchant.bidding_endtime);
       d.setUTCSeconds(merchant.bidding_endtime);
       this.price = merchant.price
       this.photo = merchant.photo || []
@@ -445,10 +483,11 @@ export default {
       this.bidding_endtime = d;
       this.account = merchant.account
       this.status = merchant.status || ""
-      this.comments = merchant.comments || []
+      this.comments = merchant.star || []
       this.isRunning = (merchant.hasBeenWon) ? false : true;
       this.updateTimer();
       this.timeinterval = setInterval(this.updateTimer, 1000);
+      this.fetchMarket(this.account);
 
       if(!this.isRunning && merchant.winner_id == this.$store.getters.account){
         this.$swal({
@@ -513,6 +552,21 @@ export default {
       }
     },
     bid(){
+      if(!this.$store.getters.authPassed){
+        this.$swal({ icon: "error", title: "請先登入！" })
+        return;
+      }else if(this.$store.getters.account == this.account){
+        this.$swal({ icon: "error", title: "您無法對自己的產品進行競標", text: "抓到" })
+        return;
+      }
+      if(this.customer_price < this.per_bid_price){
+        this.$swal({
+          icon: 'error',
+          title: `競標錯誤！`,
+          text: `您的出價小於規定每標最低金額(${this.per_bid_price})`,
+        })
+        return 
+      }
       const data = {
         token: this.$store.getters.token,
         merchant_id: this.$route.params.id,

@@ -14,10 +14,10 @@
             </template>
             <template v-slot:item._state="{ item }">
               <span style="color: red;" v-if="item.status[item.cState].status == 'canceled'">
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
               <span v-else>
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
             </template>
             <template v-slot:item.act="{ item }">
@@ -35,10 +35,10 @@
             </template>
             <template v-slot:item._state="{ item }">
               <span style="color: red;" v-if="item.status[item.cState].status == 'canceled'">
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
               <span v-else>
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
             </template>
             <template v-slot:item.act="{ item }">
@@ -56,10 +56,10 @@
             </template>
             <template v-slot:item._state="{ item }">
               <span style="color: red;" v-if="item.status[item.cState].status == 'canceled'">
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
               <span v-else>
-                {{ item.status[item.cState].status }}
+                {{ status2Zh[item.status[item.cState].status] }}
               </span>
             </template>
             <template v-slot:item.act="{ item }">
@@ -86,6 +86,15 @@ export default {
       states:[
         "進行中", "已完成", "已取消",
       ],
+      status2Zh: {
+        "newed": "訂單成立", 
+        "confirmed": "賣家已承認訂單", 
+        "contacted": "買賣方已聯繫", 
+        "shipping": "運送中", 
+        "doneShipping": "完成運送", 
+        "doneGatering": "完成取貨", 
+        "canceled": "訂單已取消", 
+      }, 
       headers: [
         { text: "賣家", value: "market" },
         { text: "訂單金額", value: "_price" },

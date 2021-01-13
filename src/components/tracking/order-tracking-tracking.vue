@@ -3,6 +3,12 @@
     class="mx-auto mt-5"
     max-width="70%"
   >
+    <comment 
+      :headers=headers
+      :merchants=order.merchants
+      ref="comment"
+      v-on:rate="rate($event)"
+    />
     <v-card-title>
       訂單追蹤
       <v-spacer v-if="(order.status[order.cState].status == 'canceled')" />
@@ -33,7 +39,7 @@
                       {{epochConverter(state.timestamp)}}
                     </div>
                     <div>
-                      {{state.status}}
+                      {{status2Zh[state.status]}}
                     </div>
                   </div>
                 </v-timeline-item>
@@ -67,7 +73,6 @@
                 </v-data-table>
                 <v-card-actions>
                   <v-spacer />
-                  <v-btn :disabled="!orderIsDone" color="primary">新增圖片或文字</v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -81,7 +86,8 @@
                 <v-card-actions>
                   <v-spacer />
                   <v-btn @click="doneGatering" :disabled="!orderIsReadyToBeDone" color="primary">確認收貨</v-btn>
-                  <v-btn :disabled="!orderIsDone" color="primary">完成訂單</v-btn>
+                  <!-- <v-btn :disabled="!orderIsDone" color="primary">完成訂單</v-btn> -->
+                  <v-btn @click="$refs['comment'].interact()" :disabled="!orderIsDone" color="primary">{{rateHint}}</v-btn>
                 </v-card-actions>
               </v-card>
             </v-col>
@@ -103,12 +109,17 @@
 </style>
 
 <script>
+import comment from './comment';
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
 export default {
+  components: { comment }, 
   data() {
     return {
       price: 9876,
+      rateHint: "填寫評價", 
+      hasFilledRate: false, 
+      rating: {}, 
       order:{
         approve: false,
         buyer: "",
@@ -119,6 +130,15 @@ export default {
         status: [],
         cState: 0,
       },
+      status2Zh: {
+        "newed": "訂單成立", 
+        "confirmed": "賣家已承認訂單", 
+        "contacted": "買賣方已聯繫", 
+        "shipping": "運送中", 
+        "doneShipping": "完成運送", 
+        "doneGatering": "完成取貨", 
+        "canceled": "訂單已取消", 
+      }, 
       timelineStatus:[
         {statusName: "訂單送出", status: true, timestamp: "2020/10/21"},
         {statusName: "賣家已接到訂單", status: true, timestamp: "2020/10/21"},
@@ -167,6 +187,49 @@ export default {
     },
   },
   methods: {
+    rate(rating){
+      this.rating = rating;
+      this.rateHint = "送出評價 並 完成訂單";
+      this.hasFilledRate = true;
+      this.$swal.fire({
+        title: '您已完成填寫評價，但是尚未送出，請問要送出您的評價嗎？',
+        icon: 'question',
+        showDenyButton: true,
+        confirmButtonText: `送出`,
+        denyButtonText: `先不要`,
+      }).then(async (res) => {
+        if(res.isConfirmed){ this.submitRating(); }
+      });
+    },
+    async submitRating(){
+      let ratingToSubmit = {};
+      ratingToSubmit.order = this.rating.overallstar;
+      ratingToSubmit.merchants = [];
+      for (const key in this.rating.merchants) {
+        const merchComment = this.rating.merchants[key];
+        ratingToSubmit.merchants.push({
+          merchantID: key, 
+          star: merchComment.star, 
+          comments: merchComment.comments
+        })
+      }
+
+      console.log(ratingToSubmit);
+      // this.orderIsDone = false;
+
+      this.$emit("loading");
+      const res = await this.$axios.post(
+        `${API_PREFIX}/merchant/order/star`, 
+        ratingToSubmit, 
+        {
+          headers: {
+            token: this.$store.getters.token
+          }
+        },
+      );
+      console.log(res);
+      this.$emit("doneloading");
+    }, 
     async fetchOrder(){
       const res = await this.$axios.post(
         `${API_PREFIX}/merchant/order/get-orders/buyer`,

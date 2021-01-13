@@ -58,12 +58,12 @@
       </template>
     </v-img>
     <v-card-text @click="$router.push(`/merchant/${merchantID}`)" class="hover" >
-      {{intro}}
+      {{intro.slice(0, 20)}} <span v-if="intro.length >= 20">...</span>
     </v-card-text>
     <v-card-actions>
       <v-btn color=secondary text elevation=0 >NT {{price.toLocaleString()}}</v-btn>
       <v-spacer />
-      <v-btn @click="putInCart" color=primary text elevation=0 :disabled=isAddingToCart>
+      <v-btn @click="putInCart" v-if="!type" color=primary text elevation=0 :disabled=isAddingToCart>
         <v-progress-circular v-if="isAddingToCart" size="18" width="2" indeterminate color="primary" />
         放入購物車
       </v-btn>
@@ -108,7 +108,7 @@ export default {
     merchantID: {
       type: String,
       default: "c8763c8763c8763c8763c8763"
-    }
+    },
   },
   data() {
     return {
@@ -142,6 +142,13 @@ export default {
       else{ this.imageNotFound = true; }
     },
     async putInCart(){
+      if(!this.$store.getters.authPassed){
+        this.$swal({ icon: "error", title: "請先登入！" })
+        return;
+      }else if(this.$store.getters.account == this.uploader){
+        this.$swal({ icon: "error", title: "請不要這樣刷業績。", text: "自產自銷的定義不是自己賣的東西自己買，這叫洗錢。" })
+        return;
+      }
       this.isAddingToCart = true;
       const res = await this.$axios.post(
         `${API_PREFIX}/merchant/add_to_cart`,
