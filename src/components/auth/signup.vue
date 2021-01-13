@@ -12,7 +12,7 @@
         <v-container>
           <v-row>
             <v-col cols="6">
-              <v-text-field v-model="form.account" label="帳號" required></v-text-field>
+              <v-text-field v-model="form.account" label="帳號" hint="需包含英數並以英文開頭，6～20碼" required></v-text-field>
             </v-col>
             <v-col cols="6">
               <v-text-field v-model="form.nick_name" label="暱稱" required></v-text-field>
@@ -35,6 +35,7 @@
                 :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show1 ? 'text' : 'password'"
                 required
+                hint="需包含英數，至少六位"
                 v-model="form.password"
                 onCopy="return false"
                 @click:append="show1 = !show1"
