@@ -169,7 +169,7 @@ export default {
       console.log(res);
       this.$emit("doneloading");
       this.$swal.fire({
-        title: '2訂單狀態已修改！',
+        title: '訂單狀態已修改！',
         icon: 'success',
       }).then(() => {
         location.reload();
