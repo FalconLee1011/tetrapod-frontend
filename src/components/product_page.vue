@@ -552,19 +552,20 @@ export default {
       }
     },
     bid(){
-      if(this.customer_price < this.per_bid_price){
-        this.$swal({
-          icon: 'error',
-          title: `競標錯誤！`,
-          text: `您的出價小於規定每標最低金額(${this.per_bid_price})`,
-        })
-      }
       if(!this.$store.getters.authPassed){
         this.$swal({ icon: "error", title: "請先登入！" })
         return;
       }else if(this.$store.getters.account == this.account){
         this.$swal({ icon: "error", title: "您無法對自己的產品進行競標", text: "抓到" })
         return;
+      }
+      if(this.customer_price < this.per_bid_price){
+        this.$swal({
+          icon: 'error',
+          title: `競標錯誤！`,
+          text: `您的出價小於規定每標最低金額(${this.per_bid_price})`,
+        })
+        return 
       }
       const data = {
         token: this.$store.getters.token,

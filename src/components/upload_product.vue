@@ -132,6 +132,7 @@
             <v-card>
               <v-time-picker
                 v-model="bidding_endtime_time"
+                format="ampm"
               ></v-time-picker>
               <v-card-actions>
                 <v-spacer />
@@ -230,7 +231,7 @@ export default{
       bidding_price_perbid: 0,
       bidding_price: 0,
       bidding_endtime: 0,
-      bidding_endtime_time: 0,
+      bidding_endtime_time: null,
       isUploading: false,
       pondHint: "點選或將拖曳以上傳圖片"
     }
@@ -282,6 +283,7 @@ export default{
         }).then(() => {
           this.isUploading = false
           console.log(res);
+          this.$router.push(`/`);
         });
       } catch (error) {
         console.log(error);

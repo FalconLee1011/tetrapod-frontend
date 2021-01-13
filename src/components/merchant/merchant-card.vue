@@ -58,7 +58,7 @@
       </template>
     </v-img>
     <v-card-text @click="$router.push(`/merchant/${merchantID}`)" class="hover" >
-      {{intro}}
+      {{intro.slice(0, 20)}} <span v-if="intro.length >= 20">...</span>
     </v-card-text>
     <v-card-actions>
       <v-btn color=secondary text elevation=0 >NT {{price.toLocaleString()}}</v-btn>
