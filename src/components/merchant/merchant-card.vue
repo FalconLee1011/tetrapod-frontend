@@ -142,6 +142,13 @@ export default {
       else{ this.imageNotFound = true; }
     },
     async putInCart(){
+      if(!this.$store.getters.authPassed){
+        this.$swal({ icon: "error", title: "請先登入！" })
+        return;
+      }else if(this.$store.getters.account == this.uploader){
+        this.$swal({ icon: "error", title: "請不要這樣刷業績。", text: "自產自銷的定義不是自己賣的東西自己買，這叫洗錢。" })
+        return;
+      }
       this.isAddingToCart = true;
       const res = await this.$axios.post(
         `${API_PREFIX}/merchant/add_to_cart`,
