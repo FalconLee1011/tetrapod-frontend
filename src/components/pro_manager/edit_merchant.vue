@@ -253,8 +253,10 @@ export default {
       for (let idx = 0; idx < this.files.length; idx++){
         data.append("files[]", this.files[idx]);
       }
-      if(this.bidding_or_not === false)
+      if(this.bidding_or_not === false){
+        data.append('price',this.price);
         data.append('name',this.name);
+      }
       data.append('quantity', this.quantity);
       data.append('intro', this.intro);
       if(this.new_or_not === true)
