@@ -3,6 +3,10 @@
     <v-card-title class="headline">
       <span>個人檔案管理</span>
     </v-card-title>
+    <v-card-subtitle>
+      必須輸入密碼以更新個人資料
+    </v-card-subtitle>
+
     <v-card-text>
       <v-container style="padding: 0px 150px">
         <div v-if="edit">
@@ -271,15 +275,29 @@ export default {
             },
           }
         );
-        this.$swal({
-          title: "資料更新成功！",
-          icon: "success",
-          showConfirmButton: false,
-          timer: 3000,
-        }).then(() => {
-          this.isUploading = false;
-          console.log(res);
-        });
+        if(res.data.status=="OK"){
+            this.$swal({
+            title: "資料更新成功！",
+            icon: "success",
+            showConfirmButton: false,
+            timer: 3000,
+          }).then(() => {
+            this.isUploading = false;
+            console.log(res);
+          });
+        }
+        else{
+          console.log(res.data.status);
+          this.$swal({
+            title: res.data.status,
+            icon: "error",
+            showConfirmButton: false,
+            timer: 3000,
+          }).then(() => {
+            this.edit=true;
+            this.isUploading = false;
+          });
+        }
       } catch (error) {
         console.log(error);
         this.$swal({
@@ -288,6 +306,7 @@ export default {
           showConfirmButton: false,
           timer: 3000,
         }).then(() => {
+          this.edit=true;
           this.isUploading = false;
         });
       }
