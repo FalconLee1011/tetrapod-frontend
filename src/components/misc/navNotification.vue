@@ -26,6 +26,11 @@
         </v-list-item-content>
         <v-btn icon small color="red" style="ml-2" @click="removeNotify(i)"><v-icon>mdi-delete-outline</v-icon></v-btn>
       </v-list-item>
+      <v-list-item v-if="notifications.length == 0">
+        <v-list-item-content>
+          沒有任何通知喔！
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>
@@ -53,7 +58,9 @@ export default {
       const account = this.$store.getters.account;
       const res = await this.$axios.get(`${API_PREFIX}/io/notification/get-notify?account=${account}`)
       console.log(res);
-      this.notifications = res.data.notifications;
+      if(res.data.notifications.length != 0){
+        this.notifications = res.data.notifications.reverse();
+      }
       this.ready = true;
     },
     async removeNotify(idx){
