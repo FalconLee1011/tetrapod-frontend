@@ -52,6 +52,7 @@
 import navBtn from './NavBtn.vue';
 import navBtnMenu from './NavBtnMenu.vue';
 import search_bar from './search.vue';
+import navNotification from './navNotification';
 
 const API_PREFIX = process.env.VUE_APP_API_PREFIX;
 
@@ -79,7 +80,7 @@ export default {
          link: "/cart"
         },
         {icon: "mdi-bell-outline", 
-         type: navBtnMenu, 
+         type: navNotification, 
          items: [
            {title: "您的商品向吉娃哇訂購的 物理課本 已經出貨", link: ""},
          ], 
